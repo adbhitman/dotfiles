@@ -1,0 +1,31 @@
+{
+  "configurations": {
+    "test_debugpy_config": {
+      "adapter": "debugpy",
+      "variables": {
+        "python": {
+          "shell": "/bin/bash -c 'test -n \"${VIRTUAL_ENV}\" && echo ${VIRTUAL_ENV}/bin/python || echo python3'"
+        }
+      },
+      "filetypes": ["python"],
+      "configuration": {
+        "request": "launch",
+        "type": "python",
+        //"cwd": "${CWD:${workspaceRoot\\}}",
+        "cwd": "${fileDirname}",
+        "python": "${python}",
+        "args": [],
+        "program": "${file}",
+        "stopOnEntry": false,
+        "console": "integratedTerminal"
+      },
+      "breakpoints": {
+        "exception": {
+          "raised": "N",
+          "uncaught": "",
+          "userUnhandled": ""
+        }
+      }
+    }
+  }
+}
