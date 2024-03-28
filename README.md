@@ -1,2 +1,3 @@
 # dotfiles
-Some of my configuration files
+
+Collecting here some of my personal scripts.
