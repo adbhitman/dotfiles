@@ -72,7 +72,7 @@ set spell
 " Mappings {{{
 nnoremap <F1> :nohlsearch<CR>
 inoremap jk <Esc>
-nnoremap <F8> :w \| call MyShowCode("python3")<CR>
+nnoremap <F8> :w \| call ShowCodeOutput("python3")<CR>
 inoremap <F8> <Esc>:w \| call ShowCodeOutput("python3")<CR>
 
 setlocal mouse=a
