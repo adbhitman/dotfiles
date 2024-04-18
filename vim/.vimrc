@@ -74,6 +74,7 @@ nnoremap <F1> :nohlsearch<CR>
 inoremap jk <Esc>
 nnoremap <F8> :w \| call ShowCodeOutput("python3")<CR>
 inoremap <F8> <Esc>:w \| call ShowCodeOutput("python3")<CR>
+" nnoremap <buffer> <localleader>b :call MyShowCode()<cr>
 
 setlocal mouse=a
 
@@ -146,7 +147,7 @@ Plug 'preservim/nerdtree'
 " Linter and fixer, lsp support
 Plug 'dense-analysis/ale'
 
-" Displays tags
+" Dispalys tags
 Plug 'preservim/tagbar'
 
 " Git diff markers
@@ -214,7 +215,7 @@ augroup END
 
 let NERDTreeWinSize=31
 let NERDTreeShowHidden=1
-nnoremap <Leader><Leader>n :NERDTreeToggle \| wincmd p<CR>
+nnoremap <silent> <Leader><Leader>n :NERDTreeToggle \| wincmd p<CR>
 nnoremap <Leader><Leader>mks :NERDTreeClose \| mksession! \| NERDTree \| wincmd p<CR>
 " }}}
 
