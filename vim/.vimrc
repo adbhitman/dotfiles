@@ -182,7 +182,7 @@ Plug 'Glench/Vim-Jinja2-Syntax'
 "Plug 'tpope/vim-dispatch'
 
 " Comment out lines
-Plug 'tpope/vim-commentary'
+"Plug 'tpope/vim-commentary'
 
 call plug#end()
 " }}}
@@ -404,6 +404,12 @@ let g:fzf_vim.command_prefix = 'Fzf'
 nnoremap q: :FzfHistory:<CR>
 " }}}
 
+"
+" Loading vim new comment plugin
+"
+" {{{
+packadd comment
+" }}}
 " }}}
 
 
