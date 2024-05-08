@@ -181,9 +181,6 @@ Plug 'Glench/Vim-Jinja2-Syntax'
 " TODO Asynchronous compiler
 "Plug 'tpope/vim-dispatch'
 
-" Comment out lines
-"Plug 'tpope/vim-commentary'
-
 call plug#end()
 " }}}
 
@@ -245,6 +242,7 @@ let g:ale_fixers =
   \   'markdown': [ 'prettier' ],
   \   'python': [ 'ruff_format' ],
   \   'sh': [ 'shfmt' ],
+  \   'tex': [ 'latexindent' ],
   \ }
 "let g:ale_linters_ignore = {'markdown': ['marksman']}
 "let g:ale_completion_enabled=1
@@ -326,6 +324,10 @@ set background=dark
 let g:gruvbox_material_background='hard'
 let g:gruvbox_material_foreground='mix'
 colorscheme gruvbox-material
+
+" make undercurl work in a terminal (like with spell)
+let &t_Ce = "\e[4:0m"
+let &t_Cs = "\e[4:3m"
 " }}}
 
 
