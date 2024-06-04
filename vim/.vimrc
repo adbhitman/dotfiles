@@ -35,7 +35,7 @@ set backspace=indent,eol,start
 
 setlocal omnifunc=syntaxcomplete#Complete
 
-set completeopt=menuone,preview,popup
+set completeopt=menuone,preview,popup,fuzzy
 
 set history=1000
 "set autochdir
@@ -65,7 +65,7 @@ augroup END
 
 highlight ColorColumn ctermbg=0 guibg=lightgrey
 
-set spell
+"set spell
 "set spelllang=en
 " }}}
 
