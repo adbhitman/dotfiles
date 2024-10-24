@@ -32,6 +32,7 @@ set autoindent    " Copy indent from current line when starting a new line.
 set smartindent
 
 set backspace=indent,eol,start
+set nojoinspaces
 
 setlocal omnifunc=syntaxcomplete#Complete
 
