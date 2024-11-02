@@ -408,10 +408,17 @@ nnoremap q: :FzfHistory:<CR>
 " }}}
 
 "
-" Loading vim new comment plugin
+" Loading VIM's comment plugin
 "
 " {{{
 packadd comment
+" }}}
+
+"
+" Loading VIM's HelpToc plugin
+"
+" {{{
+packadd helptoc
 " }}}
 " }}}
 
