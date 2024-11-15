@@ -39,6 +39,7 @@ setlocal omnifunc=syntaxcomplete#Complete
 set completeopt=menuone,preview,popup,fuzzy
 
 set history=1000
+set msghistory=1000
 "set autochdir
 
 set wildmenu
