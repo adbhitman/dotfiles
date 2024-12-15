@@ -406,6 +406,8 @@ let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
 let g:fzf_vim = {}
 let g:fzf_vim.command_prefix = 'Fzf'
 nnoremap q: :FzfHistory:<CR>
+nnoremap <Leader><Leader>b :FzfBuffers<CR>
+nnoremap <Leader><Leader>c :FzfCommands<CR>
 " }}}
 
 "
