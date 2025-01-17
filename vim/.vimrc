@@ -188,39 +188,7 @@ call plug#end()
 
 
 "
-" lervag/vimtex
-"
-" {{{
-augroup vimtex_ycm
-    au!
-    if !exists('g:ycm_semantic_triggers')
-        let g:ycm_semantic_triggers = {}
-    endif
-    au VimEnter * let g:ycm_semantic_triggers.tex=g:vimtex#re#youcompleteme
-augroup END
-" }}}
-
-
-"
-" preservim/nerdtree
-"
-" {{{
-augroup nerdtree
-    autocmd!
-    " Start NERDTree. If a file is specified, move the cursor to its window.
-    autocmd StdinReadPre * let s:std_in=1
-    autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
-augroup END
-
-let NERDTreeWinSize=31
-let NERDTreeShowHidden=1
-nnoremap <silent> <Leader><Leader>n :NERDTreeToggle \| wincmd p<CR>
-nnoremap <Leader><Leader>mks :NERDTreeClose \| mksession! \| NERDTree \| wincmd p<CR>
-" }}}
-
-
-"
-" dense-analysis/ale
+" ale
 "
 " {{{
 " Needs flake8, pylint etc. packages to python to use linting and checking:
@@ -260,7 +228,79 @@ nnoremap <Leader><Leader>f :ALEFix<CR>
 
 
 "
-" preservim/tagbar
+" comment, VIM native
+"
+" {{{
+packadd comment
+" }}}
+
+
+"
+" fzf.vim
+"
+" {{{
+let g:fzf_vim = {}
+let g:fzf_vim.command_prefix = 'Fzf'
+nnoremap q: :FzfHistory:<CR>
+nnoremap <Leader><Leader>b :FzfBuffers<CR>
+nnoremap <Leader><Leader>c :FzfCommands<CR>
+" }}}
+
+
+"
+" gruvbox-material
+"
+" {{{
+if has('termguicolors')
+    set termguicolors
+endif
+set background=dark
+let g:gruvbox_material_background='hard'
+let g:gruvbox_material_foreground='mix'
+colorscheme gruvbox-material
+
+" make undercurl work in a terminal (like with spell)
+let &t_Ce = "\e[4:0m"
+let &t_Cs = "\e[4:3m"
+" }}}
+
+
+"
+" HelpToc, VIM's native
+"
+" {{{
+packadd helptoc
+" }}}
+
+
+"
+" lightline.vim
+"
+" {{{
+let g:lightline = { 'colorscheme' : 'gruvbox_material' }
+" }}}
+
+
+"
+" nerdtree
+"
+" {{{
+augroup nerdtree
+    autocmd!
+    " Start NERDTree. If a file is specified, move the cursor to its window.
+    autocmd StdinReadPre * let s:std_in=1
+    autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
+augroup END
+
+let NERDTreeWinSize=31
+let NERDTreeShowHidden=1
+nnoremap <silent> <Leader><Leader>n :NERDTreeToggle \| wincmd p<CR>
+nnoremap <Leader><Leader>mks :NERDTreeClose \| mksession! \| NERDTree \| wincmd p<CR>
+" }}}
+
+
+"
+" tagbar
 "
 " {{{
 " requires ctags:
@@ -272,23 +312,23 @@ nnoremap <Leader><Leader>tb :TagbarToggle<CR>
 
 
 "
-" airblade/vim-gitgutter
+" ultisnips
 "
 " {{{
-nnoremap <Leader><Leader>gg :GitGutterToggle<CR>
+" These are needed for not to conflict with YCM
+" https://github.com/ycm-core/YouCompleteMe/wiki/FAQ#ycm-conflicts-with-ultisnips-tab-key-usage
+" UltiSnips triggering :
+"  - ctrl-j to expand
+"  - ctrl-j to go to next tabstop
+"  - ctrl-k to go to previous tabstop
+let g:UltiSnipsExpandTrigger = '<C-j>'
+let g:UltiSnipsJumpForwardTrigger = '<C-j>'
+let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
 " }}}
 
 
 "
-" itchyny/lightline.vim
-"
-" {{{
-let g:lightline = { 'colorscheme' : 'gruvbox_material' }
-" }}}
-
-
-"
-" puremourning/vimspector
+" vimspector
 "
 " {{{
 "let g:vimspector_install_gadgets = [ 'debugpy', 'vscode-java-debug', 'vscode-bash-debug' ]
@@ -316,25 +356,29 @@ xmap <Leader>di <Plug>VimspectorBalloonEval
 
 
 "
-" sainnhe/gruvbox-material
+" vimtex
 "
 " {{{
-if has('termguicolors')
-    set termguicolors
-endif
-set background=dark
-let g:gruvbox_material_background='hard'
-let g:gruvbox_material_foreground='mix'
-colorscheme gruvbox-material
-
-" make undercurl work in a terminal (like with spell)
-let &t_Ce = "\e[4:0m"
-let &t_Cs = "\e[4:3m"
+augroup vimtex_ycm
+    au!
+    if !exists('g:ycm_semantic_triggers')
+        let g:ycm_semantic_triggers = {}
+    endif
+    au VimEnter * let g:ycm_semantic_triggers.tex=g:vimtex#re#youcompleteme
+augroup END
 " }}}
 
 
 "
-" ycm-core/YouCompleteMe
+" vim-gitgutter
+"
+" {{{
+nnoremap <Leader><Leader>gg :GitGutterToggle<CR>
+" }}}
+
+
+"
+" YouCompleteMe
 "
 " {{{
 " Here goes your own language servers to other languages
@@ -380,48 +424,6 @@ command -count ShowDocWithSize
   \ <bar> set previewheight=<count>
   \ <bar> <mods> YcmCompleter GetDoc
   \ <bar> let &previewheight=g:ph
-" }}}
-
-
-"
-" SirVer/ultisnips
-"
-" {{{
-" These are needed for not to conflict with YCM
-" https://github.com/ycm-core/YouCompleteMe/wiki/FAQ#ycm-conflicts-with-ultisnips-tab-key-usage
-" UltiSnips triggering :
-"  - ctrl-j to expand
-"  - ctrl-j to go to next tabstop
-"  - ctrl-k to go to previous tabstop
-let g:UltiSnipsExpandTrigger = '<C-j>'
-let g:UltiSnipsJumpForwardTrigger = '<C-j>'
-let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
-" }}}
-
-
-"
-" Plug 'junegunn/fzf.vim'
-"
-" {{{
-let g:fzf_vim = {}
-let g:fzf_vim.command_prefix = 'Fzf'
-nnoremap q: :FzfHistory:<CR>
-nnoremap <Leader><Leader>b :FzfBuffers<CR>
-nnoremap <Leader><Leader>c :FzfCommands<CR>
-" }}}
-
-"
-" Loading VIM's comment plugin
-"
-" {{{
-packadd comment
-" }}}
-
-"
-" Loading VIM's HelpToc plugin
-"
-" {{{
-packadd helptoc
 " }}}
 " }}}
 
