@@ -140,20 +140,15 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-" LaTeX
-Plug 'lervag/vimtex'
-
-" File tree explorer
-Plug 'preservim/nerdtree'
-
 " Linter and fixer, lsp support
 Plug 'dense-analysis/ale'
 
-" Dispalys tags
-Plug 'preservim/tagbar'
+" Fuzzy search
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
-" Git diff markers
-Plug 'airblade/vim-gitgutter'
+" Color themes
+Plug 'sainnhe/gruvbox-material'
 
 " Statusline/tabline
 Plug 'itchyny/lightline.vim'
@@ -161,27 +156,32 @@ Plug 'itchyny/lightline.vim'
 " Markdown viewer
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
 
-" Debugger for VIM
-Plug 'puremourning/vimspector'
+" File tree explorer
+Plug 'preservim/nerdtree'
 
-" Color themes
-Plug 'sainnhe/gruvbox-material'
-
-" Autocompletion engine for VIM
-Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --java-completer' }
+" Dispalys tags
+Plug 'preservim/tagbar'
 
 " Allows to write own snippets to spesific languages or commonly all
 Plug 'SirVer/ultisnips'
 
-" Fuzzy search
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+" Debugger for VIM
+Plug 'puremourning/vimspector'
+
+" LaTeX
+Plug 'lervag/vimtex'
+
+" TODO Asynchronous compiler
+"Plug 'tpope/vim-dispatch'
+
+" Git diff markers
+Plug 'airblade/vim-gitgutter'
 
 " Jinja2 syntax
 Plug 'Glench/Vim-Jinja2-Syntax'
 
-" TODO Asynchronous compiler
-"Plug 'tpope/vim-dispatch'
+" Autocompletion engine for VIM
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --java-completer' }
 
 call plug#end()
 " }}}
