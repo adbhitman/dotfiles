@@ -231,7 +231,9 @@ nnoremap <Leader><Leader>f :ALEFix<CR>
 " comment, VIM native
 "
 " {{{
-packadd comment
+if !has('nvim')
+    packadd comment
+endif
 " }}}
 
 
@@ -269,7 +271,9 @@ let &t_Cs = "\e[4:3m"
 " HelpToc, VIM's native
 "
 " {{{
-packadd helptoc
+if !has('nvim')
+    packadd helptoc
+endif
 " }}}
 
 
