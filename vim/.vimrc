@@ -5,7 +5,7 @@
 " Common settings {{{
 set nocompatible
 set number
-"set relativenumber
+set relativenumber
 set hlsearch
 set incsearch
 set ignorecase
@@ -286,14 +286,20 @@ let g:lightline = { 'colorscheme' : 'gruvbox_material' }
 "
 " {{{
 augroup nerdtree
-    autocmd!
-    " Start NERDTree. If a file is specified, move the cursor to its window.
+    " Start NERDTree when Vim is started without file arguments.
     autocmd StdinReadPre * let s:std_in=1
-    autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
+    autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+
+    " Start NERDTree when Vim starts with a directory argument.
+    autocmd StdinReadPre * let s:std_in=1
+    autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+                \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
 augroup END
 
 let NERDTreeWinSize=31
 let NERDTreeShowHidden=1
+let NERDTreeShowLineNumbers=1
+
 nnoremap <silent> <Leader><Leader>n :NERDTreeToggle \| wincmd p<CR>
 nnoremap <Leader><Leader>mks :NERDTreeClose \| mksession! \| NERDTree \| wincmd p<CR>
 " }}}
