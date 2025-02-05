@@ -153,9 +153,6 @@ Plug 'sainnhe/gruvbox-material'
 " Statusline/tabline
 Plug 'itchyny/lightline.vim'
 
-" Markdown viewer
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
-
 " File tree explorer
 Plug 'preservim/nerdtree'
 
@@ -246,6 +243,7 @@ let g:fzf_vim.command_prefix = 'Fzf'
 nnoremap q: :FzfHistory:<CR>
 nnoremap <Leader><Leader>b :FzfBuffers<CR>
 nnoremap <Leader><Leader>c :FzfCommands<CR>
+nnoremap <Leader><Leader>s :FzfFiles<CR>
 " }}}
 
 
@@ -289,17 +287,6 @@ let g:lightline = { 'colorscheme' : 'gruvbox_material' }
 " nerdtree
 "
 " {{{
-augroup nerdtree
-    " Start NERDTree when Vim is started without file arguments.
-    autocmd StdinReadPre * let s:std_in=1
-    autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
-
-    " Start NERDTree when Vim starts with a directory argument.
-    autocmd StdinReadPre * let s:std_in=1
-    autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-                \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
-augroup END
-
 let NERDTreeWinSize=31
 let NERDTreeShowHidden=1
 let NERDTreeShowLineNumbers=1
