@@ -14,8 +14,8 @@ vim.o.encoding='utf-8'
 --vim.o.fileformat=unix
 --vim.o.fileencoding=utf-8
 
-vim.g.mapleader=''
-vim.g.maplocalleader=''
+vim.g.mapleader='\\'
+vim.g.maplocalleader='\\'
 
 vim.o.autoread=true
 vim.o.splitright=true
@@ -63,64 +63,66 @@ vim.o.scrolloff=5
 vim.o.cursorline=true
 --set cursorcolumn
 
-vim.cmd([[
-augroup setcolorcolumn
-    autocmd!
-    autocmd BufEnter * if !&textwidth | setlocal textwidth=80
-    autocmd BufWinEnter * setlocal colorcolumn=+1
-augroup END
+vim.api.nvim_create_augroup("setcolorcolumn", {})
 
-highlight ColorColumn ctermbg=0 guibg=lightgrey
-]])
+vim.api.nvim_create_autocmd({"BufEnter","BufWinEnter"}, {
+    group="setcolorcolumn",
+    callback=function()
+        if vim.bo.textwidth==0
+        then vim.bo.textwidth=80
+        end
 
-vim.o.spell=true
+        vim.wo.colorcolumn="+1"
+    end
+})
+
+vim.api.nvim_set_hl(0, "ColorColumn", {ctermbg=0, guibg=lightgrey})
+
+vim.o.spell=false
 --vim.o.spelllang='en'
 -- }}}
 
-vim.cmd([[
-" Mappings {{{
-nnoremap <F1> :nohlsearch<CR>
-inoremap jk <Esc>
-nnoremap <F8> :w \| call ShowCodeOutput("python3")<CR>
-inoremap <F8> <Esc>:w \| call ShowCodeOutput("python3")<CR>
-" nnoremap <buffer> <localleader>b :call MyShowCode()<cr>
+-- Mappings {{{
+vim.keymap.set("n", "<F1>", ":nohlsearch<CR>", {noremap=true})
+vim.keymap.set("i", "jk", "<Esc>", {noremap=true})
+vim.keymap.set({"n", "i"}, "<F8>", ":w | call ShowCodeOutput('python3')<CR>", {noremap=true})
 
-setlocal mouse=a
+vim.opt_local.mouse="a"
 
-nnoremap <leader>tm :call ToggleMouse()<CR>
-function! ToggleMouse()
-    if ( &mouse ==? '' )
-        setlocal mouse=a
+vim.keymap.set("n", "<Leader>tm", ":call ToggleMouse()<CR>", {noremap=true})
+
+function ToggleMouse()
+    if (vim.opt_local.mouse == '') then
+        vim.opt_local.mouse='a'
     else
-        setlocal mouse=""
-    endif
-    echo ':call ToggleMouse(): value:' . &mouse
-endfunction
+        vim.opt_local.mouse=''
+    end
+    print(":call ToggleMouse(): value:" .. vim.opt_local.mouse)
+end
 
-vnoremap <C-c> "+y
-map Q <Nop>
+vim.keymap.set("v", "<C-c>", "+y", {noremap=true})
+vim.api.nvim_set_keymap("n", "Q", "<Nop>", { noremap = true, silent = true })
 
-function! ShowCodeOutput(compiler)
-    let pattern='__' . bufname('%') . '_output__'
-    let windowNr=bufwinnr(pattern)
+function ShowCodeOutput(compiler)
+    local pattern='__' .. vim.fn.bufname('%') .. '_output__'
+    local windowNr=vim.fn.bufwinnr(pattern)
 
-    let code=system(a:compiler . ' ' . bufname('%') .' 2>&1')
+    local code=vim.fn.system(compiler .. ' ' .. vim.fn.bufname('%') .. ' 2>&1')
 
-    if windowNr > 0
-        execute windowNr 'wincmd w'
+    if windowNr > 0 then
+        vim.cmd("execute" .. windowNr .. " 'wincmd w'")
     else
-        execute 'vsplit' pattern
-    endif
+        vim.cmd("execute 'vsplit " .. pattern .. "'")
+    end
 
-    normal! ggdG
-    setlocal buftype=nofile
+    vim.cmd("normal! ggdG")
+    vim.opt_local.buftype="nofile"
 
-    call append(0, split(code, '\v\n'))
-    execute 'wincmd p'
-endfunction
-" }}}
-" }}}
-]])
+    vim.fn.append(0, vim.fn.split(code, "\v\n"))
+    vim.cmd("execute 'wincmd p'")
+end
+-- }}}
+-- }}}
 
 
 vim.cmd([[
@@ -432,38 +434,38 @@ command -count ShowDocWithSize
   \ <bar> let &previewheight=g:ph
 " }}}
 " }}}
-
-
-"
-" My own notes
-"
-" {{{
-" Some LSP servers needed:
-"   Install manually:
-"   - https://github.com/latex-lsp/texlab
-"   Listed in packages:
-"   - https://github.com/iamcco/vim-language-server
-"   - https://github.com/bash-lsp/bash-language-server
-"   - https://github.com/artempyanykh/marksman
-" npm packages:
-"   - bash-language-server
-"   - htmlhint
-"   - markdownlint-cli
-"   - prettier
-"   - vim-language-server
-" pip packages
-"   - autoimport
-"   - bandit
-"   - black
-"   - isort
-"   - mypy
-"   - ruff
-"   - vim-vint
-" Snap packages
-"   - marksman
-"   - shellcheck
-"   - shfmt
-" Package manager
-"   - universal-ctags
-" }}}
 ]])
+
+
+--
+-- My own notes
+--
+-- {{{
+-- Some LSP servers needed:
+--   Install manually:
+--   - https://github.com/latex-lsp/texlab
+--   Listed in packages:
+--   - https://github.com/iamcco/vim-language-server
+--   - https://github.com/bash-lsp/bash-language-server
+--   - https://github.com/artempyanykh/marksman
+-- npm packages:
+--   - bash-language-server
+--   - htmlhint
+--   - markdownlint-cli
+--   - prettier
+--   - vim-language-server
+-- pip packages
+--   - autoimport
+--   - bandit
+--   - black
+--   - isort
+--   - mypy
+--   - ruff
+--   - vim-vint
+-- Snap packages
+--   - marksman
+--   - shellcheck
+--   - shfmt
+-- Package manager
+--   - universal-ctags
+-- }}}
