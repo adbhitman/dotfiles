@@ -68,8 +68,8 @@ vim.api.nvim_create_augroup("setcolorcolumn", {})
 vim.api.nvim_create_autocmd({"BufEnter","BufWinEnter"}, {
     group="setcolorcolumn",
     callback=function()
-        if vim.bo.textwidth==0
-        then vim.bo.textwidth=80
+        if vim.bo.textwidth==0 then
+            vim.bo.textwidth=80
         end
 
         vim.wo.colorcolumn="+1"
@@ -85,23 +85,25 @@ vim.o.spell=false
 -- Mappings {{{
 vim.keymap.set("n", "<F1>", ":nohlsearch<CR>", {noremap=true})
 vim.keymap.set("i", "jk", "<Esc>", {noremap=true})
-vim.keymap.set({"n", "i"}, "<F8>", ":w | call ShowCodeOutput('python3')<CR>", {noremap=true})
+vim.keymap.set("v", "<C-c>", "+y", {noremap=true})
+vim.keymap.set("n", "Q", "<Nop>", { noremap = true, silent = true })
 
 vim.opt_local.mouse="a"
 
-vim.keymap.set("n", "<Leader>tm", ":call ToggleMouse()<CR>", {noremap=true})
 
 function ToggleMouse()
-    if (vim.opt_local.mouse == '') then
-        vim.opt_local.mouse='a'
-    else
-        vim.opt_local.mouse=''
-    end
-    print(":call ToggleMouse(): value:" .. vim.opt_local.mouse)
-end
+    local mouse_value = vim.opt_local.mouse:get()
 
-vim.keymap.set("v", "<C-c>", "+y", {noremap=true})
-vim.api.nvim_set_keymap("n", "Q", "<Nop>", { noremap = true, silent = true })
+    local is_mouse_enabled = mouse_value["a"] == true
+
+    if is_mouse_enabled then
+        vim.opt_local.mouse = ""
+    else
+        vim.opt_local.mouse = "a"
+    end
+
+    print("New mouse value:", vim.inspect(vim.opt_local.mouse:get()))
+end
 
 function ShowCodeOutput(compiler)
     local pattern='__' .. vim.fn.bufname('%') .. '_output__'
@@ -121,320 +123,313 @@ function ShowCodeOutput(compiler)
     vim.fn.append(0, vim.fn.split(code, "\v\n"))
     vim.cmd("execute 'wincmd p'")
 end
+
+
+vim.keymap.set("n", "<Leader>tm", ToggleMouse, {noremap=true})
+vim.keymap.set({"n"}, "<F8>", ":w | lua ShowCodeOutput('python3')<CR>", {noremap=true})
+vim.keymap.set({"i"}, "<F8>", "<Esc>:w | lua ShowCodeOutput('python3')<CR>", {noremap=true})
 -- }}}
 -- }}}
 
 
-vim.cmd([[
-"
-" PLUGINS
-"
-" {{{
-" Making manually helptags
-" commandline:
-"   vim -u NONE -c "helptags ~/.vim/pack/vendor/start/nerdtree/doc" -c q
-" in VIM:
-"   helptags ~/.vim/pack/vendor/start/nerdtree/doc
+--
+-- PLUGINS
+--
+-- {{{
+--
+-- folke/lazy.nvim
+--
+-- {{{
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+    if vim.v.shell_error ~= 0 then
+        vim.api.nvim_echo({
+            { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+            { out, "WarningMsg" },
+            { "\nPress any key to exit..." },
+        }, true, {})
+        vim.fn.getchar()
+        os.exit(1)
+    end
+end
+vim.opt.rtp:prepend(lazypath)
 
 
-"
-" junegunn/vim-plug
-"
-" {{{
-" autoload and install needed plugins
-"
-" Install vim-plug if not found
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-endif
+-- Setup lazy.nvim
+require("lazy").setup({
+    spec = {
+        {
+            -- Linter and fixer, lsp support
+            'dense-analysis/ale',
+            config = function()
+                vim.g.ale_linters =
+                {
+                    java= {},
+                    markdown= {'markdownlint', 'marksman'},
+                    python= {'ruff', 'mypy'},
+                    sh={'shell', 'shellcheck'},
+                    tex={'texlab'},
+                }
+                vim.g.ale_fixers = {
+                    ['*']= {'trim_whitespace'},
+                    css= {'prettier'},
+                    html= {'prettier'},
+                    javascript= {'prettier'},
+                    json= {'prettier'},
+                    markdown= {'prettier'},
+                    python= {'ruff_format'},
+                    sh= {'shfmt'},
+                    tex= {'latexindent'},
+                }
 
-call plug#begin('~/.vim/plugged')
+                -- vim.g.ale_linters_ignore = {markdown= {'marksman'}}
+                -- vim.g.ale_completion_enabled=1
+                -- vim.g.ale_fix_on_save = 1
+                -- vim.gale_linters_explicit = 1
+                -- vim.g.ale_python_ruff_options='--config ~/.ruff.toml'
+                vim.g.ale_markdown_markdownlint_options='--disable MD013 --'
+                vim.g.ale_python_mypy_options='--ignore-missing-imports'
+                vim.g.ale_sh_shfmt_options='--indent 4'
 
-" Linter and fixer, lsp support
-Plug 'dense-analysis/ale'
+                vim.keymap.set('n', "<Leader><Leader>f", ":ALEFix<CR>", {noremap=true})
+            end
+        },
+        {
+            -- Fuzzy search
+            'junegunn/fzf',
+            config = function()
+                vim.fn['fzf#install']()
+            end
+        },
+        {
+            'junegunn/fzf.vim',
+            init = function()
+                vim.g.fzf_vim = {}  -- Initializes fzf_vim
+                vim.g.fzf_command_prefix = 'Fzf'
+            end,
+            config=function()
+                vim.keymap.set('n', '<Leader><Leader>b', ':FzfBuffers<CR>', { noremap = true })
+                vim.keymap.set('n', '<Leader><Leader>c', ':FzfCommands<CR>', { noremap = true })
+                vim.keymap.set('n', '<Leader><Leader>s', ':FzfFiles<CR>', { noremap = true })
+                vim.keymap.set('n', 'q:', ':FzfHistory:<CR>', { noremap = true })
+            end
+        },
+        {
+            -- Color themes
+            'sainnhe/gruvbox-material',
+            lazy = false,
+            priority = 1000,
+            config = function()
+                -- Optionally configure and load the colorscheme
+                -- directly inside the plugin declaration.
+                vim.g.gruvbox_material_enable_italic = true
+                vim.o.background=dark
+                vim.g.ogruvbox_material_background='hard'
+                vim.g.ogruvbox_material_foreground='mix'
+                vim.cmd.colorscheme('gruvbox-material')
 
-" Fuzzy search
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+                vim.opt.termguicolors = true
+                -- make undercurl work in a terminal (like with spell)
+                vim.cmd([[
+                let &t_Ce = "\e[4:0m"
+                let &t_Cs = "\e[4:3m"
+                ]])
+            end
+        },
+        {
+            -- Statusline/tabline
+            'itchyny/lightline.vim',
+            init=function()
+                vim.g.lightline = { colorscheme = 'gruvbox_material' }
+            end
+        },
+        {
+            -- File tree explorer
+            'preservim/nerdtree',
+            init=function()
+                vim.g.NERDTreeWinSize=31
+                vim.g.NERDTreeShowHidden=1
+                vim.g.NERDTreeShowLineNumbers=1
+            end,
+            config=function()
+                vim.keymap.set('n', "<Leader><Leader>n", ":NERDTreeToggle | wincmd p<CR>", {noremap=true, silent=true})
+                -- nnoremap <Leader><Leader>mks :NERDTreeClose \| mksession! \| NERDTree \| wincmd p<CR>
+            end
+        },
+        {
+            -- Dispalys tags
+            'preservim/tagbar',
+            init=function()
+                vim.g.tagbar_width=40
+                vim.keymap.set('n', '<Leader><Leader>tb', ':TagbarToggle<CR>', {noremap=true})
+            end
+        },
+        {
+            -- Allows to write own snippets to spesific languages or commonly all
+            'SirVer/ultisnips',
+            init=function()
+                -- These are needed for not to conflict with YCM
+                -- https://github.com/ycm-core/YouCompleteMe/wiki/FAQ#ycm-conflicts-with-ultisnips-tab-key-usage
+                -- UltiSnips triggering :
+                --  - ctrl-j to expand
+                --  - ctrl-j to go to next tabstop
+                --  - ctrl-k to go to previous tabstop
+                vim.g.UltiSnipsExpandTrigger = '<C-j>'
+                vim.g.UltiSnipsJumpForwardTrigger = '<C-j>'
+                vim.g.UltiSnipsJumpBackwardTrigger = '<C-k>'
+            end
+        },
+        {
+            -- Debugger for VIM
+            'puremourning/vimspector',
+            config = function()
+                -- vim.g.vimspector_install_gadgets = { 'debugpy', 'vscode-java-debug', 'vscode-bash-debug' }
 
-" Color themes
-Plug 'sainnhe/gruvbox-material'
+                vim.g.ycm_semantic_triggers = {
+                    VimspectorPrompt = { '.', '->', ':', '<' }
+                }
 
-" Statusline/tabline
-Plug 'itchyny/lightline.vim'
+                -- vim.g.vimspector_enable_mappings = 'HUMAN'
+                vim.keymap.set('n', '<F5>', '<Plug>VimspectorContinue', { noremap = true, silent = true })
+                vim.keymap.set('n', '<F3>', '<Plug>VimspectorStop', { noremap = true, silent = true })
+                vim.keymap.set('n', '<F4>', '<Plug>VimspectorRestart', { noremap = true, silent = true })
+                vim.keymap.set('n', '<F6>', '<Plug>VimspectorPause', { noremap = true, silent = true })
+                vim.keymap.set('n', '<F9>', '<Plug>VimspectorToggleBreakpoint', { noremap = true, silent = true })
+                vim.keymap.set('n', '<leader><F9>', '<Plug>VimspectorToggleConditionalBreakpoint', { noremap = true, silent = true })
+                vim.keymap.set('n', '<leader><F8>', '<Plug>VimspectorRunToCursor', { noremap = true, silent = true })
+                vim.keymap.set('n', '<F10>', '<Plug>VimspectorStepOver', { noremap = true, silent = true })
+                vim.keymap.set('n', '<F11>', '<Plug>VimspectorStepInto', { noremap = true, silent = true })
+                vim.keymap.set('n', '<F12>', '<Plug>VimspectorStepOut', { noremap = true, silent = true })
+                vim.keymap.set('x', '<Leader>di', '<Plug>VimspectorBalloonEval', { noremap = true, silent = true })
+            end
+        },
+        {
+            -- LaTeX
+            "lervag/vimtex",
+            lazy = false,     -- we don't want to lazy load VimTeX
+            -- tag = "v2.15", -- uncomment to pin to a specific release
+            init = function()
+                vim.api.nvim_create_augroup("vimtex_ycm", {})
 
-" File tree explorer
-Plug 'preservim/nerdtree'
+                vim.api.nvim_create_autocmd({'BufEnter'}, {
+                    group="vimtex_ycm",
+                    callback=function()
+                        -- Check if the variable 'g:ycm_semantic_triggers' exists
+                        if not vim.g.ycm_semantic_triggers then
+                            vim.g.ycm_semantic_triggers = {}
+                        end
 
-" Dispalys tags
-Plug 'preservim/tagbar'
+                        -- Create an autocommand for the 'VimEnter' event
+                        vim.api.nvim_create_autocmd("VimEnter", {
+                            callback = function()
+                                -- Check if vimtex is loaded
+                                if vim.g.vimtex and vim.g.vimtex.re then
+                                    -- Make sure the VimTeX re table is accessible
+                                    vim.g.ycm_semantic_triggers.tex = vim.g.vimtex.re.youcompleteme
+                                else
+                                    print("VimTeX is not loaded or 're' field is missing!")
+                                end
+                            end
+                        })
 
-" Allows to write own snippets to spesific languages or commonly all
-Plug 'SirVer/ultisnips'
+                    end
+                })
+            end
+        },
+        {
+            -- Git diff markers
+            'airblade/vim-gitgutter',
+            config=function()
+                vim.keymap.set('n', '<Leader><Leader>gg', ':GitGutterToggle<CR>', {noremap=true})
+            end
+        },
+        {
+            -- Jinja2 syntax
+            'Glench/Vim-Jinja2-Syntax',
+        },
+        {
+            -- Autocompletion engine for VIM
+            'ycm-core/YouCompleteMe',
+            build = './install.py --java-completer',
+            -- Setting up the YCM language server
+            init=function()
+                vim.g.ycm_language_server = {
+                    {
+                        name = 'vim',
+                        cmdline = { 'vim-language-server', '--stdio' },
+                        filetypes = { 'vim' }
+                    },
+                    {
+                        name = 'bash',
+                        cmdline = { 'bash-language-server', 'start' },
+                        filetypes = { 'sh' }
+                    },
+                    {
+                        name = 'marksman',
+                        cmdline = { 'marksman', 'server' },
+                        filetypes = { 'markdown' }
+                    }
+                }
 
-" Debugger for VIM
-Plug 'puremourning/vimspector'
+                vim.g.ycm_filetype_blacklist = {
+                    tagbar = 1,
+                    notes = 1,
+                    netrw = 1,
+                    unite = 1,
+                    text = 1,
+                    vimwiki = 1,
+                    pandoc = 1,
+                    infolog = 1,
+                    leaderf = 1,
+                    -- markdown = 1,
+                    mail = 1,
+                }
 
-" LaTeX
-Plug 'lervag/vimtex'
+                -- Enable auto-close of the preview window after completion
+                vim.g.ycm_autoclose_preview_window_after_completion = 1
 
-" TODO Asynchronous compiler
-"Plug 'tpope/vim-dispatch'
+                -- Set up time for autohover (in ms,  making autohover appear faster)
+                vim.o.updatetime = 100
 
-" Git diff markers
-Plug 'airblade/vim-gitgutter'
+                -- Configure YCM auto-hover
+                vim.g.ycm_auto_hover = ''
 
-" Jinja2 syntax
-Plug 'Glench/Vim-Jinja2-Syntax'
-
-" Autocompletion engine for VIM
-Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --java-completer' }
-
-call plug#end()
-" }}}
-
-
-"
-" ale
-"
-" {{{
-" Needs flake8, pylint etc. packages to python to use linting and checking:
-" pip install flake8 black
-"
-let g:ale_linters =
-  \ {
-  \   'java': [],
-  \   'markdown': [ 'markdownlint', 'marksman' ],
-  \   'python': [ 'ruff', 'mypy' ],
-  \   'sh': [ 'shell', 'shellcheck' ],
-  \   'tex': [ 'texlab' ],
-  \ }
-let g:ale_fixers =
-  \ {
-  \    '*': [ 'trim_whitespace' ],
-  \   'css': [ 'prettier' ],
-  \   'html': [ 'prettier' ],
-  \   'javascript': [ 'prettier' ],
-  \   'json': [ 'prettier' ],
-  \   'markdown': [ 'prettier' ],
-  \   'python': [ 'ruff_format' ],
-  \   'sh': [ 'shfmt' ],
-  \   'tex': [ 'latexindent' ],
-  \ }
-"let g:ale_linters_ignore = {'markdown': ['marksman']}
-"let g:ale_completion_enabled=1
-"let g:ale_fix_on_save = 1
-"let g:ale_linters_explicit = 1
-"let g:ale_python_ruff_options='--config ~/.ruff.toml'
-let g:ale_markdown_markdownlint_options='--disable MD013 --'
-let g:ale_python_mypy_options='--ignore-missing-imports'
-let g:ale_sh_shfmt_options='--indent 4'
-
-nnoremap <Leader><Leader>f :ALEFix<CR>
-" }}}
-
-
-"
-" comment, VIM native
-"
-" {{{
-if !has('nvim')
-    packadd comment
-endif
-" }}}
-
-
-"
-" fzf.vim
-"
-" {{{
-let g:fzf_vim = {}
-let g:fzf_vim.command_prefix = 'Fzf'
-nnoremap q: :FzfHistory:<CR>
-nnoremap <Leader><Leader>b :FzfBuffers<CR>
-nnoremap <Leader><Leader>c :FzfCommands<CR>
-nnoremap <Leader><Leader>s :FzfFiles<CR>
-" }}}
-
-
-"
-" gruvbox-material
-"
-" {{{
-if has('termguicolors')
-    set termguicolors
-endif
-set background=dark
-let g:gruvbox_material_background='hard'
-let g:gruvbox_material_foreground='mix'
-colorscheme gruvbox-material
-
-" make undercurl work in a terminal (like with spell)
-let &t_Ce = "\e[4:0m"
-let &t_Cs = "\e[4:3m"
-" }}}
-
-
-"
-" HelpToc, VIM's native
-"
-" {{{
-if !has('nvim')
-    packadd helptoc
-endif
-" }}}
-
-
-"
-" lightline.vim
-"
-" {{{
-let g:lightline = { 'colorscheme' : 'gruvbox_material' }
-" }}}
-
-
-"
-" nerdtree
-"
-" {{{
-let NERDTreeWinSize=31
-let NERDTreeShowHidden=1
-let NERDTreeShowLineNumbers=1
-
-nnoremap <silent> <Leader><Leader>n :NERDTreeToggle \| wincmd p<CR>
-nnoremap <Leader><Leader>mks :NERDTreeClose \| mksession! \| NERDTree \| wincmd p<CR>
-" }}}
-
-
-"
-" tagbar
-"
-" {{{
-" requires ctags:
-"   sudo apt install universal-ctags
-"
-let g:tagbar_width=40
-nnoremap <Leader><Leader>tb :TagbarToggle<CR>
-" }}}
-
-
-"
-" ultisnips
-"
-" {{{
-" These are needed for not to conflict with YCM
-" https://github.com/ycm-core/YouCompleteMe/wiki/FAQ#ycm-conflicts-with-ultisnips-tab-key-usage
-" UltiSnips triggering :
-"  - ctrl-j to expand
-"  - ctrl-j to go to next tabstop
-"  - ctrl-k to go to previous tabstop
-let g:UltiSnipsExpandTrigger = '<C-j>'
-let g:UltiSnipsJumpForwardTrigger = '<C-j>'
-let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
-" }}}
-
-
-"
-" vimspector
-"
-" {{{
-"let g:vimspector_install_gadgets = [ 'debugpy', 'vscode-java-debug', 'vscode-bash-debug' ]
-let g:ycm_semantic_triggers =  {
-    \ 'VimspectorPrompt': [ '.', '->', ':', '<' ]
-\ }
-
-"let g:vimspector_enable_mappings = 'HUMAN'
-nmap <F5> <Plug>VimspectorContinue
-nmap <F3> <Plug>VimspectorStop
-nmap <F4> <Plug>VimspectorRestart
-nmap <F6> <Plug>VimspectorPause
-nmap <F9> <Plug>VimspectorToggleBreakpoint
-nmap <leader><F9> <Plug>VimspectorToggleConditionalBreakpoint
-nmap <leader><F8> <Plug>VimspectorRunToCursor
-nmap <F10> <Plug>VimspectorStepOver
-nmap <F11> <Plug>VimspectorStepInto
-nmap <F12> <Plug>VimspectorStepOut
-
-" for normal mode - the word under the cursor
-nmap <Leader>di <Plug>VimspectorBalloonEval
-" for visual mode, the visually selected text
-xmap <Leader>di <Plug>VimspectorBalloonEval
-" }}}
-
-
-"
-" vimtex
-"
-" {{{
-augroup vimtex_ycm
-    au!
-    if !exists('g:ycm_semantic_triggers')
-        let g:ycm_semantic_triggers = {}
-    endif
-    au VimEnter * let g:ycm_semantic_triggers.tex=g:vimtex#re#youcompleteme
-augroup END
-" }}}
-
-
-"
-" vim-gitgutter
-"
-" {{{
-nnoremap <Leader><Leader>gg :GitGutterToggle<CR>
-" }}}
-
-
-"
-" YouCompleteMe
-"
-" {{{
-" Here goes your own language servers to other languages
-let g:ycm_language_server =
-  \ [
-  \   {
-  \     'name': 'vim',
-  \     'cmdline': [ 'vim-language-server', '--stdio' ],
-  \     'filetypes': [ 'vim' ],
-  \   },
-  \   {
-  \     'name': 'bash',
-  \     'cmdline': [ 'bash-language-server', 'start' ],
-  \     'filetypes': [ 'sh' ],
-  \   },
-  \   {
-  \     'name': 'marksman',
-  \     'cmdline': [ 'marksman', 'server' ],
-  \     'filetypes': [ 'markdown' ],
-  \   },
-  \ ]
-let g:ycm_filetype_blacklist = {
-      \ 'tagbar': 1,
-      \ 'notes': 1,
-      \ 'netrw': 1,
-      \ 'unite': 1,
-      \ 'text': 1,
-      \ 'vimwiki': 1,
-      \ 'pandoc': 1,
-      \ 'infolog': 1,
-      \ 'leaderf': 1,
-      \ 'mail': 1
-      \}
-      "\ 'markdown': 1,
-let g:ycm_autoclose_preview_window_after_completion=1
-set updatetime=100 " in ms,  making autohover appear faster
-let g:ycm_auto_hover=''
-nnoremap KH <plug>(YCMHover)
-nnoremap KK :vertical 85ShowDocWithSize<CR>
-
-command -count ShowDocWithSize
-  \ let g:ph=&previewheight
-  \ <bar> set previewheight=<count>
-  \ <bar> <mods> YcmCompleter GetDoc
-  \ <bar> let &previewheight=g:ph
-" }}}
-" }}}
-]])
+                -- Key mappings
+                vim.keymap.set('n', 'KH', '<Plug>(YCMHover)', { noremap = true, silent = true })
+                vim.keymap.set('n', 'KK', ':vertical 85ShowDocWithSize<CR>', { noremap = true, silent = true })
+                vim.api.nvim_create_user_command('ShowDocWithSize',
+                function(opts)
+                    vim.g.ph = vim.o.previewheight
+                    vim.o.previewheight = opts.count
+                    vim.cmd('YcmCompleter GetDoc')
+                    vim.o.previewheight = vim.g.ph
+                end,
+                { nargs = 1 })
+            end
+        },
+    },
+        -- Configure any other settings here. See the documentation for more details.
+        -- colorscheme that will be used when installing plugins.
+        install = {
+            colorscheme = { "gruvbox-material" },
+            missing = false,
+        },
+        pkg = {
+            -- the first package source that is found for a plugin will be used.
+            sources = {
+                "lazy",
+                "rockspec", -- will only be used when rocks.enabled is true
+                "packspec",
+            },
+        },
+        rocks = {
+            enabled = false,
+        },
+    })
+-- }}}
 
 
 --
