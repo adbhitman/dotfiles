@@ -61,7 +61,7 @@ vim.o.ttimeoutlen=100
 vim.o.scrolloff=5
 
 vim.o.cursorline=true
---set cursorcolumn
+--vim.o.cursorcolumn=true
 
 vim.api.nvim_create_augroup("setcolorcolumn", {})
 
@@ -120,7 +120,7 @@ function ShowCodeOutput(compiler)
     vim.cmd("normal! ggdG")
     vim.opt_local.buftype="nofile"
 
-    vim.fn.append(0, vim.fn.split(code, "\v\n"))
+    vim.fn.append(0, vim.fn.split(code, "\n"))
     vim.cmd("execute 'wincmd p'")
 end
 
@@ -158,10 +158,12 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 
+-- lazy.nvim {{{
 -- Setup lazy.nvim
 require("lazy").setup({
     spec = {
         {
+            -- ale {{{
             -- Linter and fixer, lsp support
             'dense-analysis/ale',
             config = function()
@@ -196,15 +198,19 @@ require("lazy").setup({
 
                 vim.keymap.set('n', "<Leader><Leader>f", ":ALEFix<CR>", {noremap=true})
             end
+            -- }}}
         },
         {
+            -- fzf {
             -- Fuzzy search
             'junegunn/fzf',
             config = function()
                 vim.fn['fzf#install']()
             end
+            -- }}}
         },
         {
+            -- fzf.vim {{{
             'junegunn/fzf.vim',
             init = function()
                 vim.g.fzf_vim = {}  -- Initializes fzf_vim
@@ -216,37 +222,38 @@ require("lazy").setup({
                 vim.keymap.set('n', '<Leader><Leader>s', ':FzfFiles<CR>', { noremap = true })
                 vim.keymap.set('n', 'q:', ':FzfHistory:<CR>', { noremap = true })
             end
+            -- }}}
         },
         {
+            -- gruvbox-material {{{
             -- Color themes
             'sainnhe/gruvbox-material',
             lazy = false,
             priority = 1000,
             config = function()
-                -- Optionally configure and load the colorscheme
-                -- directly inside the plugin declaration.
-                vim.g.gruvbox_material_enable_italic = true
-                vim.o.background=dark
-                vim.g.ogruvbox_material_background='hard'
-                vim.g.ogruvbox_material_foreground='mix'
-                vim.cmd.colorscheme('gruvbox-material')
+                if vim.fn.has('termguicolors') == 1 then
+                    vim.o.termguicolors = true
+                end
 
-                vim.opt.termguicolors = true
-                -- make undercurl work in a terminal (like with spell)
-                vim.cmd([[
-                let &t_Ce = "\e[4:0m"
-                let &t_Cs = "\e[4:3m"
-                ]])
+                vim.g.gruvbox_material_background='hard'
+                vim.g.gruvbox_material_foreground='mix'
+                vim.o.background='dark'
+
+                vim.cmd.colorscheme('gruvbox-material')
             end
+            -- }}}
         },
         {
+            -- tabline {{{
             -- Statusline/tabline
             'itchyny/lightline.vim',
             init=function()
                 vim.g.lightline = { colorscheme = 'gruvbox_material' }
             end
+         -- }}}
         },
         {
+            -- nerdtree {{{
             -- File tree explorer
             'preservim/nerdtree',
             init=function()
@@ -258,16 +265,20 @@ require("lazy").setup({
                 vim.keymap.set('n', "<Leader><Leader>n", ":NERDTreeToggle | wincmd p<CR>", {noremap=true, silent=true})
                 -- nnoremap <Leader><Leader>mks :NERDTreeClose \| mksession! \| NERDTree \| wincmd p<CR>
             end
+         -- }}}
         },
         {
+            -- tagbar {{{
             -- Dispalys tags
             'preservim/tagbar',
             init=function()
                 vim.g.tagbar_width=40
                 vim.keymap.set('n', '<Leader><Leader>tb', ':TagbarToggle<CR>', {noremap=true})
             end
+            -- }}}
         },
         {
+            -- ultisnips {{{
             -- Allows to write own snippets to spesific languages or commonly all
             'SirVer/ultisnips',
             init=function()
@@ -281,8 +292,10 @@ require("lazy").setup({
                 vim.g.UltiSnipsJumpForwardTrigger = '<C-j>'
                 vim.g.UltiSnipsJumpBackwardTrigger = '<C-k>'
             end
+            -- }}}
         },
         {
+            -- vimspector {{{
             -- Debugger for VIM
             'puremourning/vimspector',
             config = function()
@@ -305,8 +318,10 @@ require("lazy").setup({
                 vim.keymap.set('n', '<F12>', '<Plug>VimspectorStepOut', { noremap = true, silent = true })
                 vim.keymap.set('x', '<Leader>di', '<Plug>VimspectorBalloonEval', { noremap = true, silent = true })
             end
+            --}}}
         },
         {
+            -- vimtex {{{
             -- LaTeX
             "lervag/vimtex",
             lazy = false,     -- we don't want to lazy load VimTeX
@@ -334,23 +349,28 @@ require("lazy").setup({
                                 end
                             end
                         })
-
                     end
                 })
             end
+            -- }}}
         },
         {
+            -- vim-gitgutter {{{
             -- Git diff markers
             'airblade/vim-gitgutter',
             config=function()
                 vim.keymap.set('n', '<Leader><Leader>gg', ':GitGutterToggle<CR>', {noremap=true})
             end
+            -- }}}
         },
         {
+            -- Vim-Jinja2-Syntax {{{
             -- Jinja2 syntax
             'Glench/Vim-Jinja2-Syntax',
+            -- }}}
         },
         {
+            -- YouCompleteMe {{{
             -- Autocompletion engine for VIM
             'ycm-core/YouCompleteMe',
             build = './install.py --java-completer',
@@ -409,8 +429,10 @@ require("lazy").setup({
                 end,
                 { nargs = 1 })
             end
+            -- }}}
         },
     },
+        -- Other settings {{{
         -- Configure any other settings here. See the documentation for more details.
         -- colorscheme that will be used when installing plugins.
         install = {
@@ -428,6 +450,7 @@ require("lazy").setup({
         rocks = {
             enabled = false,
         },
+        -- }}}
     })
 -- }}}
 
