@@ -136,11 +136,8 @@ vim.keymap.set({"i"}, "<F8>", "<Esc>:w | lua ShowCodeOutput('python3')<CR>", {no
 -- PLUGINS
 --
 -- {{{
---
--- folke/lazy.nvim
---
--- {{{
 -- Bootstrap lazy.nvim {{{
+-- folke/lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
     local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -158,8 +155,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 -- }}}
 
-
 -- lazy.nvim {{{
+-- {{{
 -- Setup lazy.nvim
 require("lazy").setup({
     spec = {
@@ -202,12 +199,9 @@ require("lazy").setup({
             -- }}}
         },
         {
-            -- fzf {
-            -- Fuzzy search
-            'junegunn/fzf',
-            config = function()
-                vim.fn['fzf#install']()
-            end
+         -- fzf {{{
+         -- Fuzzy search
+         'junegunn/fzf',
             -- }}}
         },
         {
@@ -226,31 +220,36 @@ require("lazy").setup({
             -- }}}
         },
         {
-            -- gruvbox-material {{{
-            -- Color themes
-            'sainnhe/gruvbox-material',
-            lazy = false,
-            priority = 1000,
-            config = function()
-                if vim.fn.has('termguicolors') == 1 then
-                    vim.o.termguicolors = true
-                end
+         -- gruvbox-material {{{
+         -- Color themes
+         'sainnhe/gruvbox-material',
+         lazy = false,
+         priority = 1000,
+         config = function()
+             if vim.fn.has('termguicolors') == 1 then
+                 vim.o.termguicolors = true
+             end
 
-                vim.g.gruvbox_material_background='hard'
-                vim.g.gruvbox_material_foreground='mix'
-                vim.o.background='dark'
+             vim.g.gruvbox_material_background='hard'
+             vim.g.gruvbox_material_foreground='mix'
+             vim.o.background='dark'
 
-                vim.cmd.colorscheme('gruvbox-material')
-            end
-            -- }}}
+             vim.cmd.colorscheme('gruvbox-material')
+         end
+         -- }}}
         },
         {
-            -- tabline {{{
-            -- Statusline/tabline
-            'itchyny/lightline.vim',
-            init=function()
-                vim.g.lightline = { colorscheme = 'gruvbox_material' }
-            end
+         -- lightline.vim {{{
+         -- Statusline/tabline
+         'itchyny/lightline.vim',
+         init=function()
+             vim.g.lightline = { colorscheme = 'gruvbox_material' }
+         end
+         -- }}}
+        },
+        {
+         -- nvim-lspconfig {{{
+            'neovim/nvim-lspconfig',
          -- }}}
         },
         {
@@ -463,10 +462,7 @@ require("lazy").setup({
 -- }}}
 
 
---
--- My own notes
---
--- {{{
+-- My own notes {{{
 -- Some LSP servers needed:
 --   Install manually:
 --   - https://github.com/latex-lsp/texlab
