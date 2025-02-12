@@ -140,7 +140,7 @@ vim.keymap.set({"i"}, "<F8>", "<Esc>:w | lua ShowCodeOutput('python3')<CR>", {no
 -- folke/lazy.nvim
 --
 -- {{{
--- Bootstrap lazy.nvim
+-- Bootstrap lazy.nvim {{{
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
     local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -156,6 +156,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     end
 end
 vim.opt.rtp:prepend(lazypath)
+-- }}}
 
 
 -- lazy.nvim {{{
@@ -253,18 +254,24 @@ require("lazy").setup({
          -- }}}
         },
         {
-            -- nerdtree {{{
-            -- File tree explorer
-            'preservim/nerdtree',
-            init=function()
-                vim.g.NERDTreeWinSize=31
-                vim.g.NERDTreeShowHidden=1
-                vim.g.NERDTreeShowLineNumbers=1
-            end,
-            config=function()
-                vim.keymap.set('n', "<Leader><Leader>n", ":NERDTreeToggle | wincmd p<CR>", {noremap=true, silent=true})
-                -- nnoremap <Leader><Leader>mks :NERDTreeClose \| mksession! \| NERDTree \| wincmd p<CR>
-            end
+         -- nvim-tree {{{
+         -- File tree explorer
+         'nvim-tree/nvim-tree.lua',
+         init=function()
+             vim.g.loaded_netrw = 1
+             vim.g.loaded_netrwPlugin = 1
+         end,
+         config=function()
+             require("nvim-tree").setup({
+                 view = {
+                     width = 31,
+                     number = true,
+                     relativenumber = true,
+                 },
+             })
+
+             vim.keymap.set('n', "<Leader><Leader>n", ":NvimTreeToggle | wincmd p<CR>", {noremap=true, silent=true})
+         end,
          -- }}}
         },
         {
@@ -452,6 +459,7 @@ require("lazy").setup({
         },
         -- }}}
     })
+-- }}}
 -- }}}
 
 
