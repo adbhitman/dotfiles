@@ -161,42 +161,35 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     spec = {
         {
-            -- ale {{{
-            -- Linter and fixer, lsp support
-            'dense-analysis/ale',
-            config = function()
-                vim.g.ale_linters =
-                {
-                    java= {},
-                    markdown= {'markdownlint', 'marksman'},
-                    python= {'ruff', 'mypy'},
-                    sh={'shell', 'shellcheck'},
-                    tex={'texlab'},
-                }
-                vim.g.ale_fixers = {
-                    ['*']= {'trim_whitespace'},
-                    css= {'prettier'},
-                    html= {'prettier'},
-                    javascript= {'prettier'},
-                    json= {'prettier'},
-                    markdown= {'prettier'},
-                    python= {'ruff_format'},
-                    sh= {'shfmt'},
-                    tex= {'latexindent'},
-                }
-
-                -- vim.g.ale_linters_ignore = {markdown= {'marksman'}}
-                -- vim.g.ale_completion_enabled=1
-                -- vim.g.ale_fix_on_save = 1
-                -- vim.gale_linters_explicit = 1
-                -- vim.g.ale_python_ruff_options='--config ~/.ruff.toml'
-                vim.g.ale_markdown_markdownlint_options='--disable MD013 --'
-                vim.g.ale_python_mypy_options='--ignore-missing-imports'
-                vim.g.ale_sh_shfmt_options='--indent 4'
-
-                vim.keymap.set('n', "<Leader><Leader>f", ":ALEFix<CR>", {noremap=true})
-            end
-            -- }}}
+         -- formatter.nvim {{{
+         -- code formatter
+         'mhartington/formatter.nvim',
+         config=function()
+             require("formatter").setup({
+                 logging = true,
+                 log_level = vim.log.levels.WARN,
+                 filetype = {
+                     -- Formatter configurations for filetype "lua" go here
+                     -- and will be executed in order
+                     lua = {require("formatter.filetypes.lua").stylua},
+                     css = {require("formatter.filetypes.css").prettier},
+                     html = {require("formatter.filetypes.html").prettier},
+                     javascript = {require("formatter.filetypes.javascript").prettier},
+                     json = {require("formatter.filetypes.json").prettier},
+                     markdown = {require("formatter.filetypes.markdown").prettier},
+                     python = {require("formatter.filetypes.python").ruff},
+                     sh = {require("formatter.filetypes.sh").shfmt},
+                     tex = {require("formatter.filetypes.latex").latexindent},
+                     ["*"] = {
+                         require("formatter.filetypes.any").remove_trailing_whitespace,
+                         -- Remove trailing whitespace without 'sed'
+                         -- require("formatter.filetypes.any").substitute_trailing_whitespace,
+                     }
+                 }
+             })
+             vim.keymap.set('n', "<Leader><Leader>f", ":Format<CR>", {noremap=true})
+         end
+         -- }}}
         },
         {
          -- fzf {{{
@@ -205,19 +198,19 @@ require("lazy").setup({
             -- }}}
         },
         {
-            -- fzf.vim {{{
-            'junegunn/fzf.vim',
-            init = function()
-                vim.g.fzf_vim = {}  -- Initializes fzf_vim
-                vim.g.fzf_command_prefix = 'Fzf'
-            end,
-            config=function()
-                vim.keymap.set('n', '<Leader><Leader>b', ':FzfBuffers<CR>', { noremap = true })
-                vim.keymap.set('n', '<Leader><Leader>c', ':FzfCommands<CR>', { noremap = true })
-                vim.keymap.set('n', '<Leader><Leader>s', ':FzfFiles<CR>', { noremap = true })
-                vim.keymap.set('n', 'q:', ':FzfHistory:<CR>', { noremap = true })
-            end
-            -- }}}
+         -- fzf.vim {{{
+         'junegunn/fzf.vim',
+	 init = function()
+		 vim.g.fzf_vim = {}  -- Initializes fzf_vim
+		 vim.g.fzf_command_prefix = 'Fzf'
+	 end,
+	 config=function()
+		 vim.keymap.set('n', '<Leader><Leader>b', ':FzfBuffers<CR>', { noremap = true })
+		 vim.keymap.set('n', '<Leader><Leader>c', ':FzfCommands<CR>', { noremap = true })
+		 vim.keymap.set('n', '<Leader><Leader>s', ':FzfFiles<CR>', { noremap = true })
+		 vim.keymap.set('n', 'q:', ':FzfHistory:<CR>', { noremap = true })
+	 end
+         -- }}}
         },
         {
          -- gruvbox-material {{{
@@ -277,8 +270,79 @@ require("lazy").setup({
          -- }}}
         },
         {
+         -- nvim-autopairs {{{
+         'windwp/nvim-autopairs',
+         event = "InsertEnter",
+         config = true
+         -- use opts = {} for passing setup options
+         -- this is equivalent to setup({}) function
+         -- }}}
+        },
+	    {
+         -- nvim-cmp {{{
+         -- A completion plugin
+         'hrsh7th/nvim-cmp',
+         dependencies={
+             'hrsh7th/cmp-buffer',
+             'hrsh7th/cmp-nvim-lsp',
+             'quangnguyen30192/cmp-nvim-ultisnips',
+         },
+         config=function()
+             local cmp = require('cmp')
+             require('cmp').setup({
+                 sources = {
+                     {name='buffer'},
+                     {name='nvim-lsp'},
+                     {name='cmp-nvim-ultisnips'},
+                 },
+                 snippet = {
+                     -- REQUIRED - you must specify a snippet engine
+                     expand = function(args)
+                         vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+                     end,
+                 },
+                 mapping = cmp.mapping.preset.insert({
+                     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+                     ['<C-f>'] = cmp.mapping.scroll_docs(4),
+                     ['<C-Space>'] = cmp.mapping.complete(),
+                     ['<C-e>'] = cmp.mapping.abort(),
+                     -- Accept currently selected item. Set `select` to `false`
+                     -- to only confirm explicitly selected items.
+                     ['<CR>'] = cmp.mapping.confirm({ select = true }), 
+                 }),
+             })
+         end
+         -- }}}
+        },
+        {
+         -- nvim-lint {{{
+         'mfussenegger/nvim-lint',
+         config=function()
+             require('lint').linters_by_ft = {
+                 markdown = {'markdownlint'},
+                 python = {'ruff'},
+                 sh={'shellcheck'},
+                 bash={'shellcheck'},
+             }
+
+             vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+                 callback = function()
+                     require("lint").try_lint()
+                 end,
+             })
+         end
+         -- }}}
+        },
+        {
          -- nvim-lspconfig {{{
          'neovim/nvim-lspconfig',
+         config=function()
+             local capabilities = require('cmp_nvim_lsp').default_capabilities()
+             local lspconfig = require('lspconfig')
+
+             lspconfig.marksman.setup{capabilities=capabilities}
+             lspconfig.texlab.setup{capabilities = capabilities}
+         end
          -- }}}
         },
         {
@@ -303,168 +367,100 @@ require("lazy").setup({
          -- }}}
         },
         {
-            -- tagbar {{{
-            -- Dispalys tags
-            'preservim/tagbar',
-            init=function()
-                vim.g.tagbar_width=40
-                vim.keymap.set('n', '<Leader><Leader>tb', ':TagbarToggle<CR>', {noremap=true})
-            end
-            -- }}}
+         -- tagbar {{{
+         -- Dispalys tags
+         'preservim/tagbar',
+         init=function()
+             vim.g.tagbar_width=40
+             vim.keymap.set('n', '<Leader><Leader>tb', ':TagbarToggle<CR>', {noremap=true})
+         end
+         -- }}}
         },
         {
-            -- ultisnips {{{
-            -- Allows to write own snippets to spesific languages or commonly all
-            'SirVer/ultisnips',
-            init=function()
-                -- These are needed for not to conflict with YCM
-                -- https://github.com/ycm-core/YouCompleteMe/wiki/FAQ#ycm-conflicts-with-ultisnips-tab-key-usage
-                -- UltiSnips triggering :
-                --  - ctrl-j to expand
-                --  - ctrl-j to go to next tabstop
-                --  - ctrl-k to go to previous tabstop
-                vim.g.UltiSnipsExpandTrigger = '<C-j>'
-                vim.g.UltiSnipsJumpForwardTrigger = '<C-j>'
-                vim.g.UltiSnipsJumpBackwardTrigger = '<C-k>'
-            end
-            -- }}}
+         -- ultisnips {{{
+         -- Allows to write own snippets to spesific languages or commonly all
+         'SirVer/ultisnips',
+         init=function()
+             -- These are needed for not to conflict with YCM
+             -- https://github.com/ycm-core/YouCompleteMe/wiki/FAQ#ycm-conflicts-with-ultisnips-tab-key-usage
+             -- UltiSnips triggering :
+             --  - ctrl-j to expand
+             --  - ctrl-j to go to next tabstop
+             --  - ctrl-k to go to previous tabstop
+             vim.g.UltiSnipsExpandTrigger = '<C-j>'
+             vim.g.UltiSnipsJumpForwardTrigger = '<C-j>'
+             vim.g.UltiSnipsJumpBackwardTrigger = '<C-k>'
+         end
+         -- }}}
         },
         {
-            -- vimspector {{{
-            -- Debugger for VIM
-            'puremourning/vimspector',
-            config = function()
-                -- vim.g.vimspector_install_gadgets = { 'debugpy', 'vscode-java-debug', 'vscode-bash-debug' }
+         -- vimspector {{{
+         -- Debugger for VIM
+         'puremourning/vimspector',
+         config = function()
+             -- vim.g.vimspector_install_gadgets = { 'debugpy', 'vscode-java-debug', 'vscode-bash-debug' }
 
-                vim.g.ycm_semantic_triggers = {
-                    VimspectorPrompt = { '.', '->', ':', '<' }
-                }
+             vim.g.ycm_semantic_triggers = {
+                 VimspectorPrompt = { '.', '->', ':', '<' }
+             }
 
-                -- vim.g.vimspector_enable_mappings = 'HUMAN'
-                vim.keymap.set('n', '<F5>', '<Plug>VimspectorContinue', { noremap = true, silent = true })
-                vim.keymap.set('n', '<F3>', '<Plug>VimspectorStop', { noremap = true, silent = true })
-                vim.keymap.set('n', '<F4>', '<Plug>VimspectorRestart', { noremap = true, silent = true })
-                vim.keymap.set('n', '<F6>', '<Plug>VimspectorPause', { noremap = true, silent = true })
-                vim.keymap.set('n', '<F9>', '<Plug>VimspectorToggleBreakpoint', { noremap = true, silent = true })
-                vim.keymap.set('n', '<leader><F9>', '<Plug>VimspectorToggleConditionalBreakpoint', { noremap = true, silent = true })
-                vim.keymap.set('n', '<leader><F8>', '<Plug>VimspectorRunToCursor', { noremap = true, silent = true })
-                vim.keymap.set('n', '<F10>', '<Plug>VimspectorStepOver', { noremap = true, silent = true })
-                vim.keymap.set('n', '<F11>', '<Plug>VimspectorStepInto', { noremap = true, silent = true })
-                vim.keymap.set('n', '<F12>', '<Plug>VimspectorStepOut', { noremap = true, silent = true })
-                vim.keymap.set('x', '<Leader>di', '<Plug>VimspectorBalloonEval', { noremap = true, silent = true })
-            end
-            --}}}
+             -- vim.g.vimspector_enable_mappings = 'HUMAN'
+             vim.keymap.set('n', '<F5>', '<Plug>VimspectorContinue', { noremap = true, silent = true })
+             vim.keymap.set('n', '<F3>', '<Plug>VimspectorStop', { noremap = true, silent = true })
+             vim.keymap.set('n', '<F4>', '<Plug>VimspectorRestart', { noremap = true, silent = true })
+             vim.keymap.set('n', '<F6>', '<Plug>VimspectorPause', { noremap = true, silent = true })
+             vim.keymap.set('n', '<F9>', '<Plug>VimspectorToggleBreakpoint', { noremap = true, silent = true })
+             vim.keymap.set('n', '<leader><F9>', '<Plug>VimspectorToggleConditionalBreakpoint', { noremap = true, silent = true })
+             vim.keymap.set('n', '<leader><F8>', '<Plug>VimspectorRunToCursor', { noremap = true, silent = true })
+             vim.keymap.set('n', '<F10>', '<Plug>VimspectorStepOver', { noremap = true, silent = true })
+             vim.keymap.set('n', '<F11>', '<Plug>VimspectorStepInto', { noremap = true, silent = true })
+             vim.keymap.set('n', '<F12>', '<Plug>VimspectorStepOut', { noremap = true, silent = true })
+             vim.keymap.set('x', '<Leader>di', '<Plug>VimspectorBalloonEval', { noremap = true, silent = true })
+         end
+         --}}}
         },
         {
-            -- vimtex {{{
-            -- LaTeX
-            "lervag/vimtex",
-            lazy = false,     -- we don't want to lazy load VimTeX
-            -- tag = "v2.15", -- uncomment to pin to a specific release
-            init = function()
-                vim.api.nvim_create_augroup("vimtex_ycm", {})
+         -- vimtex {{{
+         -- LaTeX
+         "lervag/vimtex",
+         lazy = false,     -- we don't want to lazy load VimTeX
+         -- tag = "v2.15", -- uncomment to pin to a specific release
+         init = function()
+             vim.api.nvim_create_augroup("vimtex_ycm", {})
 
-                vim.api.nvim_create_autocmd({'BufEnter'}, {
-                    group="vimtex_ycm",
-                    callback=function()
-                        -- Check if the variable 'g:ycm_semantic_triggers' exists
-                        if not vim.g.ycm_semantic_triggers then
-                            vim.g.ycm_semantic_triggers = {}
-                        end
+             vim.api.nvim_create_autocmd({'BufEnter'}, {
+                 group="vimtex_ycm",
+                 callback=function()
+                     -- Check if the variable 'g:ycm_semantic_triggers' exists
+                     if not vim.g.ycm_semantic_triggers then
+                         vim.g.ycm_semantic_triggers = {}
+                     end
 
-                        -- Create an autocommand for the 'VimEnter' event
-                        vim.api.nvim_create_autocmd("VimEnter", {
-                            callback = function()
-                                -- Check if vimtex is loaded
-                                if vim.g.vimtex and vim.g.vimtex.re then
-                                    -- Make sure the VimTeX re table is accessible
-                                    vim.g.ycm_semantic_triggers.tex = vim.g.vimtex.re.youcompleteme
-                                else
-                                    print("VimTeX is not loaded or 're' field is missing!")
-                                end
-                            end
-                        })
-                    end
-                })
-            end
-            -- }}}
+                     -- Create an autocommand for the 'VimEnter' event
+                     vim.api.nvim_create_autocmd("VimEnter", {
+                         callback = function()
+                             -- Check if vimtex is loaded
+                             if vim.g.vimtex and vim.g.vimtex.re then
+                                 -- Make sure the VimTeX re table is accessible
+                                 vim.g.ycm_semantic_triggers.tex = vim.g.vimtex.re.youcompleteme
+                             else
+                                 print("VimTeX is not loaded or 're' field is missing!")
+                             end
+                         end
+                     })
+                 end
+             })
+         end
+         -- }}}
         },
         {
-            -- vim-gitgutter {{{
-            -- Git diff markers
-            'airblade/vim-gitgutter',
-            config=function()
-                vim.keymap.set('n', '<Leader><Leader>gg', ':GitGutterToggle<CR>', {noremap=true})
-            end
-            -- }}}
-        },
-        {
-            -- Vim-Jinja2-Syntax {{{
-            -- Jinja2 syntax
-            'Glench/Vim-Jinja2-Syntax',
-            -- }}}
-        },
-        {
-            -- YouCompleteMe {{{
-            -- Autocompletion engine for VIM
-            'ycm-core/YouCompleteMe',
-            build = './install.py --java-completer',
-            -- Setting up the YCM language server
-            init=function()
-                vim.g.ycm_language_server = {
-                    {
-                        name = 'vim',
-                        cmdline = { 'vim-language-server', '--stdio' },
-                        filetypes = { 'vim' }
-                    },
-                    {
-                        name = 'bash',
-                        cmdline = { 'bash-language-server', 'start' },
-                        filetypes = { 'sh' }
-                    },
-                    {
-                        name = 'marksman',
-                        cmdline = { 'marksman', 'server' },
-                        filetypes = { 'markdown' }
-                    }
-                }
-
-                vim.g.ycm_filetype_blacklist = {
-                    tagbar = 1,
-                    notes = 1,
-                    netrw = 1,
-                    unite = 1,
-                    text = 1,
-                    vimwiki = 1,
-                    pandoc = 1,
-                    infolog = 1,
-                    leaderf = 1,
-                    -- markdown = 1,
-                    mail = 1,
-                }
-
-                -- Enable auto-close of the preview window after completion
-                vim.g.ycm_autoclose_preview_window_after_completion = 1
-
-                -- Set up time for autohover (in ms,  making autohover appear faster)
-                vim.o.updatetime = 100
-
-                -- Configure YCM auto-hover
-                vim.g.ycm_auto_hover = ''
-
-                -- Key mappings
-                vim.keymap.set('n', 'KH', '<Plug>(YCMHover)', { noremap = true, silent = true })
-                vim.keymap.set('n', 'KK', ':vertical 85ShowDocWithSize<CR>', { noremap = true, silent = true })
-                vim.api.nvim_create_user_command('ShowDocWithSize',
-                function(opts)
-                    vim.g.ph = vim.o.previewheight
-                    vim.o.previewheight = opts.count
-                    vim.cmd('YcmCompleter GetDoc')
-                    vim.o.previewheight = vim.g.ph
-                end,
-                { nargs = 1 })
-            end
-            -- }}}
+         -- vim-gitgutter {{{
+         -- Git diff markers
+         'airblade/vim-gitgutter',
+         config=function()
+             vim.keymap.set('n', '<Leader><Leader>gg', ':GitGutterToggle<CR>', {noremap=true})
+         end
+         -- }}}
         },
     },
         -- Other settings {{{
