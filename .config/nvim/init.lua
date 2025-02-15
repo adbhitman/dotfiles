@@ -286,6 +286,8 @@ require("lazy").setup({
              'hrsh7th/cmp-buffer',
              'hrsh7th/cmp-nvim-lsp',
              'quangnguyen30192/cmp-nvim-ultisnips',
+             'hrsh7th/cmp-path',
+             'micangl/cmp-vimtex',
          },
          config=function()
              local cmp = require('cmp')
@@ -294,6 +296,8 @@ require("lazy").setup({
                      {name='buffer'},
                      {name='nvim-lsp'},
                      {name='cmp-nvim-ultisnips'},
+                     {name='path'},
+                     {name='vimtex'},
                  },
                  snippet = {
                      -- REQUIRED - you must specify a snippet engine
@@ -315,17 +319,39 @@ require("lazy").setup({
          -- }}}
         },
         {
+         -- nvim-dap {{{
+         -- debugger
+         'mfussenegger/nvim-dap',
+         -- }}}
+        },
+        {
+         -- nvim-dap-ui {{{
+         -- UI for nvim-dap
+         "rcarriga/nvim-dap-ui",
+         dependencies = {
+             "mfussenegger/nvim-dap",
+             "nvim-neotest/nvim-nio"
+         } 
+         --}}}
+        },
+        {
          -- nvim-lint {{{
          'mfussenegger/nvim-lint',
          config=function()
              require('lint').linters_by_ft = {
+                 lua = {'luac'},
                  markdown = {'markdownlint'},
                  python = {'ruff'},
                  sh={'shellcheck'},
-                 bash={'shellcheck'},
              }
 
-             vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+             vim.diagnostic.config({
+                 virtual_text = true,
+                 underline = true,
+                 update_in_insert = true,
+             })
+
+             vim.api.nvim_create_autocmd({ "InsertLeave", "BufWritePost" }, {
                  callback = function()
                      require("lint").try_lint()
                  end,
@@ -340,6 +366,7 @@ require("lazy").setup({
              local capabilities = require('cmp_nvim_lsp').default_capabilities()
              local lspconfig = require('lspconfig')
 
+             lspconfig.lua_ls.setup{capabilities=capabilities}
              lspconfig.marksman.setup{capabilities=capabilities}
              lspconfig.texlab.setup{capabilities = capabilities}
          end
@@ -392,32 +419,6 @@ require("lazy").setup({
              vim.g.UltiSnipsJumpBackwardTrigger = '<C-k>'
          end
          -- }}}
-        },
-        {
-         -- vimspector {{{
-         -- Debugger for VIM
-         'puremourning/vimspector',
-         config = function()
-             -- vim.g.vimspector_install_gadgets = { 'debugpy', 'vscode-java-debug', 'vscode-bash-debug' }
-
-             vim.g.ycm_semantic_triggers = {
-                 VimspectorPrompt = { '.', '->', ':', '<' }
-             }
-
-             -- vim.g.vimspector_enable_mappings = 'HUMAN'
-             vim.keymap.set('n', '<F5>', '<Plug>VimspectorContinue', { noremap = true, silent = true })
-             vim.keymap.set('n', '<F3>', '<Plug>VimspectorStop', { noremap = true, silent = true })
-             vim.keymap.set('n', '<F4>', '<Plug>VimspectorRestart', { noremap = true, silent = true })
-             vim.keymap.set('n', '<F6>', '<Plug>VimspectorPause', { noremap = true, silent = true })
-             vim.keymap.set('n', '<F9>', '<Plug>VimspectorToggleBreakpoint', { noremap = true, silent = true })
-             vim.keymap.set('n', '<leader><F9>', '<Plug>VimspectorToggleConditionalBreakpoint', { noremap = true, silent = true })
-             vim.keymap.set('n', '<leader><F8>', '<Plug>VimspectorRunToCursor', { noremap = true, silent = true })
-             vim.keymap.set('n', '<F10>', '<Plug>VimspectorStepOver', { noremap = true, silent = true })
-             vim.keymap.set('n', '<F11>', '<Plug>VimspectorStepInto', { noremap = true, silent = true })
-             vim.keymap.set('n', '<F12>', '<Plug>VimspectorStepOut', { noremap = true, silent = true })
-             vim.keymap.set('x', '<Leader>di', '<Plug>VimspectorBalloonEval', { noremap = true, silent = true })
-         end
-         --}}}
         },
         {
          -- vimtex {{{
