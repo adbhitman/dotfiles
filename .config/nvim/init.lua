@@ -258,11 +258,12 @@ require("lazy").setup({
       -- }}}
     },
     {
-      -- lightline.vim {{{
+      -- lualine.nvim {{{
       -- Statusline/tabline
-      "itchyny/lightline.vim",
-      init = function()
-        vim.g.lightline = { colorscheme = "gruvbox_material" }
+      "nvim-lualine/lualine.nvim",
+      dependencies = { "nvim-tree/nvim-web-devicons" },
+      config = function()
+        require("lualine").setup()
       end,
       -- }}}
     },
@@ -342,6 +343,13 @@ require("lazy").setup({
             -- to only confirm explicitly selected items.
             ["<CR>"] = cmp.mapping.confirm({ select = true }),
           }),
+          window = {
+            completion = cmp.config.window.bordered(),
+            documentation = cmp.config.window.bordered(),
+          },
+          view = {
+            entries = "custom", -- can be "custom", "wildmenu" or "native"
+          },
         })
       end,
       -- }}}
