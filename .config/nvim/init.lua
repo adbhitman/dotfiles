@@ -161,34 +161,63 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     spec = {
         {
-         -- formatter.nvim {{{
+         -- conform.nvim {{{
          -- code formatter
-         'mhartington/formatter.nvim',
-         config=function()
-             require("formatter").setup({
-                 logging = true,
-                 log_level = vim.log.levels.WARN,
-                 filetype = {
-                     -- Formatter configurations for filetype "lua" go here
-                     -- and will be executed in order
-                     lua = {require("formatter.filetypes.lua").stylua},
-                     css = {require("formatter.filetypes.css").prettier},
-                     html = {require("formatter.filetypes.html").prettier},
-                     javascript = {require("formatter.filetypes.javascript").prettier},
-                     json = {require("formatter.filetypes.json").prettier},
-                     markdown = {require("formatter.filetypes.markdown").prettier},
-                     python = {require("formatter.filetypes.python").ruff},
-                     sh = {require("formatter.filetypes.sh").shfmt},
-                     tex = {require("formatter.filetypes.latex").latexindent},
-                     ["*"] = {
-                         require("formatter.filetypes.any").remove_trailing_whitespace,
-                         -- Remove trailing whitespace without 'sed'
-                         -- require("formatter.filetypes.any").substitute_trailing_whitespace,
-                     }
-                 }
-             })
-             vim.keymap.set('n', "<Leader><Leader>f", ":Format<CR>", {noremap=true})
-         end
+         'stevearc/conform.nvim',
+         event = {},
+         cmd = { "ConformInfo" },
+         keys = {
+             {
+                 -- Customize or remove this keymap to your liking
+                 --     vim.keymap.set('n', "<Leader><Leader>f", ":Format<CR>", {noremap=true})
+                 "<Leader><Leader>f",
+                 function()
+                     require("conform").format({ async = true })
+                 end,
+                 mode = "",
+                 desc = "Format buffer",
+             },
+         },
+         -- This will provide type hinting with LuaLS
+         ---@module "conform"
+         ---@type conform.setupOpts
+         opts = {
+             -- Define your formatters
+             formatters_by_ft = {
+                 lua = {"stylua"},
+                 css = {"prettier"},
+                 html = {"prettier"},
+                 javascript = {"prettier"},
+                 json = {"prettier"},
+                 markdown = {"prettier"},
+                 python = {"ruff"},
+                 sh = {"shfmt"},
+                 bash = {"shfmt"},
+                 tex = {"latexindent"},
+
+                 -- Use the "*" filetype to run formatters on all filetypes.
+                 -- ["*"] = { "codespell" },
+                 -- Use the "_" filetype to run formatters on filetypes that don't
+                 -- have other formatters configured.
+                 ["_"] = { "trim_whitespace" },
+             },
+             -- Set default options
+             default_format_opts = {
+                 lsp_format = "fallback",
+             },
+             -- Set up format-on-save
+             -- format_on_save = { timeout_ms = 500 },
+             -- Customize formatters
+             formatters = {
+                 shfmt = {
+                     prepend_args = { "-i", "2" },
+                 },
+             },
+         },
+         init = function()
+             -- If you want the formatexpr, here is the place to set it
+             vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+         end,
          -- }}}
         },
         {
@@ -285,6 +314,7 @@ require("lazy").setup({
          dependencies={
              'hrsh7th/cmp-buffer',
              'hrsh7th/cmp-nvim-lsp',
+             'hrsh7th/cmp-nvim-lua',
              'quangnguyen30192/cmp-nvim-ultisnips',
              'hrsh7th/cmp-path',
              'micangl/cmp-vimtex',
@@ -295,6 +325,7 @@ require("lazy").setup({
                  sources = {
                      {name='buffer'},
                      {name='nvim-lsp'},
+                     {name='nvim-lua'},
                      {name='cmp-nvim-ultisnips'},
                      {name='path'},
                      {name='vimtex'},
@@ -351,7 +382,7 @@ require("lazy").setup({
                  update_in_insert = true,
              })
 
-             vim.api.nvim_create_autocmd({ "InsertLeave", "BufWritePost" }, {
+             vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave", "BufWritePost" }, {
                  callback = function()
                      require("lint").try_lint()
                  end,
@@ -366,7 +397,18 @@ require("lazy").setup({
              local capabilities = require('cmp_nvim_lsp').default_capabilities()
              local lspconfig = require('lspconfig')
 
-             lspconfig.lua_ls.setup{capabilities=capabilities}
+             lspconfig.bashls.setup{capabilities=capabilities}
+             lspconfig.lua_ls.setup({
+                 capabilities=capabilities,
+                 settings = {
+                     Lua = {
+                         diagnostics={
+                             globals={"vim"}
+                         }
+                     }
+                 },
+
+             })
              lspconfig.marksman.setup{capabilities=capabilities}
              lspconfig.texlab.setup{capabilities = capabilities}
          end
