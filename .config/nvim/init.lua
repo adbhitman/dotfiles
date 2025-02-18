@@ -153,7 +153,6 @@ vim.opt.rtp:prepend(lazypath)
 -- }}}
 
 -- lazy.nvim {{{
--- {{{
 -- Setup lazy.nvim
 require("lazy").setup({
   spec = {
@@ -166,7 +165,6 @@ require("lazy").setup({
       keys = {
         {
           -- Customize or remove this keymap to your liking
-          --     vim.keymap.set('n', "<Leader><Leader>f", ":Format<CR>", {noremap=true})
           "<Leader><Leader>f",
           function()
             require("conform").format({ async = true })
@@ -205,37 +203,35 @@ require("lazy").setup({
         -- Set up format-on-save
         -- format_on_save = { timeout_ms = 500 },
         -- Customize formatters
-        formatters = {
-          shfmt = {
-            prepend_args = { "-i", "2" },
-          },
-        },
+        --   formatters = {
+        --     shfmt = {
+        --       prepend_args = { "-i", "2" },
+        --     },
+        --   },
       },
-      init = function()
-        -- If you want the formatexpr, here is the place to set it
-        vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-      end,
+      -- init = function()
+      --   -- If you want the formatexpr, here is the place to set it
+      --   vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+      -- end,
       -- }}}
     },
     {
-      -- fzf {{{
-      -- Fuzzy search
-      "junegunn/fzf",
-      -- }}}
-    },
-    {
-      -- fzf.vim {{{
-      "junegunn/fzf.vim",
-      init = function()
-        vim.g.fzf_vim = {} -- Initializes fzf_vim
-        vim.g.fzf_command_prefix = "Fzf"
-      end,
-      config = function()
-        vim.keymap.set("n", "<Leader><Leader>b", ":FzfBuffers<CR>", { noremap = true })
-        vim.keymap.set("n", "<Leader><Leader>c", ":FzfCommands<CR>", { noremap = true })
-        vim.keymap.set("n", "<Leader><Leader>s", ":FzfFiles<CR>", { noremap = true })
-        vim.keymap.set("n", "q:", ":FzfHistory:<CR>", { noremap = true })
-      end,
+      -- fzf-lua {{{
+      {
+        "ibhagwan/fzf-lua",
+        -- optional for icon support
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        config = function()
+          require("fzf-lua").setup({
+            "fzf-native",
+          })
+
+          vim.keymap.set("n", "<Leader><Leader>b", ":FzfLua buffers<CR>", { noremap = true })
+          vim.keymap.set("n", "<Leader><Leader>c", ":FzfLua commands<CR>", { noremap = true })
+          vim.keymap.set("n", "<Leader><Leader>s", ":FzfLua files<CR>", { noremap = true })
+          vim.keymap.set("n", "q:", ":FzfLua command_history<CR>", { noremap = true })
+        end,
+      },
       -- }}}
     },
     {
@@ -271,7 +267,11 @@ require("lazy").setup({
       -- mason {{{
       "williamboman/mason.nvim",
       config = function()
-        require("mason").setup()
+        require("mason").setup({
+          ui = {
+            check_outdated_packages_on_open = false,
+          },
+        })
       end,
       -- }}}
     },
@@ -342,6 +342,13 @@ require("lazy").setup({
             -- Accept currently selected item. Set `select` to `false`
             -- to only confirm explicitly selected items.
             ["<CR>"] = cmp.mapping.confirm({ select = true }),
+            ["<Tab>"] = function(fallback)
+              if cmp.visible() then
+                cmp.select_next_item()
+              else
+                fallback()
+              end
+            end,
           }),
           window = {
             completion = cmp.config.window.bordered(),
@@ -382,9 +389,13 @@ require("lazy").setup({
         }
 
         vim.diagnostic.config({
-          virtual_text = true,
-          underline = true,
-          update_in_insert = true,
+          virtual_text = false,
+          virtual_lines = false,
+          float = {
+            focusable = false, -- Whether the float window should be focusable
+            style = "minimal", -- Optionally set the float style (can be 'minimal' or 'normal')
+            border = "rounded", -- Optionally set a border style for the float
+          },
         })
 
         vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave", "BufWritePost" }, {
@@ -415,6 +426,7 @@ require("lazy").setup({
         })
         lspconfig.marksman.setup({ capabilities = capabilities })
         lspconfig.texlab.setup({ capabilities = capabilities })
+        lspconfig.jedi_language_server.setup({ capabilities = capabilities })
       end,
       -- }}}
     },
