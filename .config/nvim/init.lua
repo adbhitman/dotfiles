@@ -224,6 +224,20 @@ require("lazy").setup({
         config = function()
           require("fzf-lua").setup({
             "fzf-native",
+            -- "default",
+            winopts = {
+              preview = {
+                default = "buildin",
+                layout = "horizontal", -- horizontal|vertical|flex
+                hidden = false,
+              },
+            },
+            fzf_opts = {
+              -- ["--layout"] = "reverse-list",
+              -- nullify fzf-lua's settings to inherit from FZF_DEFAULT_OPTS
+              ["--info"] = false,
+              ["--layout"] = false,
+            },
           })
 
           vim.keymap.set("n", "<Leader><Leader>b", ":FzfLua buffers<CR>", { noremap = true })
@@ -466,15 +480,20 @@ require("lazy").setup({
       -- Allows to write own snippets to spesific languages or commonly all
       "SirVer/ultisnips",
       init = function()
-        -- These are needed for not to conflict with YCM
-        -- https://github.com/ycm-core/YouCompleteMe/wiki/FAQ#ycm-conflicts-with-ultisnips-tab-key-usage
-        -- UltiSnips triggering :
-        --  - ctrl-j to expand
-        --  - ctrl-j to go to next tabstop
-        --  - ctrl-k to go to previous tabstop
+        -- Trigger configuration. You need to change this to something other
+        -- than <tab> if you use one of the following:
+        -- - https://github.com/Valloric/YouCompleteMe
+        -- - https://github.com/nvim-lua/completion-nvim
+        -- vim.g.UltiSnipsExpandTrigger="<tab>"
+        -- vim.g.UltiSnipsJumpForwardTrigger="<c-b>"
+        -- vim.g.UltiSnipsJumpBackwardTrigger="<c-z>"
+
         vim.g.UltiSnipsExpandTrigger = "<C-j>"
         vim.g.UltiSnipsJumpForwardTrigger = "<C-j>"
         vim.g.UltiSnipsJumpBackwardTrigger = "<C-k>"
+
+        -- If you want :UltiSnipsEdit to split your window.
+        -- vim.g.UltiSnipsEditSplit = "vertical"
       end,
       -- }}}
     },
@@ -485,30 +504,8 @@ require("lazy").setup({
       lazy = false, -- we don't want to lazy load VimTeX
       -- tag = "v2.15", -- uncomment to pin to a specific release
       init = function()
-        vim.api.nvim_create_augroup("vimtex_ycm", {})
-
-        vim.api.nvim_create_autocmd({ "BufEnter" }, {
-          group = "vimtex_ycm",
-          callback = function()
-            -- Check if the variable 'g:ycm_semantic_triggers' exists
-            if not vim.g.ycm_semantic_triggers then
-              vim.g.ycm_semantic_triggers = {}
-            end
-
-            -- Create an autocommand for the 'VimEnter' event
-            vim.api.nvim_create_autocmd("VimEnter", {
-              callback = function()
-                -- Check if vimtex is loaded
-                if vim.g.vimtex and vim.g.vimtex.re then
-                  -- Make sure the VimTeX re table is accessible
-                  vim.g.ycm_semantic_triggers.tex = vim.g.vimtex.re.youcompleteme
-                else
-                  print("VimTeX is not loaded or 're' field is missing!")
-                end
-              end,
-            })
-          end,
-        })
+        -- VimTeX configuration goes here, e.g.
+        vim.g.vimtex_view_method = "general"
       end,
       -- }}}
     },
