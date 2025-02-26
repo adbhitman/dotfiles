@@ -14,16 +14,11 @@ vim.o.encoding = "utf-8"
 --vim.o.fileformat=unix
 --vim.o.fileencoding=utf-8
 
-vim.g.mapleader = "\\"
+vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
 vim.o.autoread = true
 vim.o.splitright = true
-
-vim.cmd([[
-syntax on
-filetype plugin indent on
-]])
 
 -- sets tabs to spaces
 vim.o.tabstop = 4 -- Size of TAB as spaces=true
@@ -36,10 +31,7 @@ vim.o.smartindent = true
 vim.opt.backspace = { "indent", "eol", "start" }
 vim.o.joinspaces = false
 
-vim.cmd([[
-setlocal omnifunc=syntaxcomplete#Complete
-]])
-
+vim.opt.omnifunc = "syntaxcomplete#Complete"
 vim.opt.completeopt = { "menuone", "preview", "popup", "fuzzy" }
 
 vim.o.history = 1000
@@ -156,16 +148,16 @@ vim.opt.rtp:prepend(lazypath)
 -- Setup lazy.nvim
 require("lazy").setup({
   spec = {
+    -- conform.nvim {{{
+    -- code formatter
     {
-      -- conform.nvim {{{
-      -- code formatter
       "stevearc/conform.nvim",
       event = {},
       cmd = { "ConformInfo" },
       keys = {
         {
           -- Customize or remove this keymap to your liking
-          "<Leader><Leader>f",
+          "<Leader>f",
           function()
             require("conform").format({ async = true })
           end,
@@ -184,6 +176,7 @@ require("lazy").setup({
           html = { "prettier" },
           javascript = { "prettier" },
           json = { "prettier" },
+          jsonc = { "prettier" },
           markdown = { "prettier" },
           python = { "ruff" },
           sh = { "shfmt" },
@@ -213,10 +206,10 @@ require("lazy").setup({
       --   -- If you want the formatexpr, here is the place to set it
       --   vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
       -- end,
-      -- }}}
     },
+    -- }}}
+    -- fzf-lua {{{
     {
-      -- fzf-lua {{{
       {
         "ibhagwan/fzf-lua",
         -- optional for icon support
@@ -227,8 +220,8 @@ require("lazy").setup({
             -- "default",
             winopts = {
               preview = {
-                default = "buildin",
-                layout = "horizontal", -- horizontal|vertical|flex
+                default = "bat",
+                layout = "flex", -- horizontal|vertical|flex
                 hidden = false,
               },
             },
@@ -240,17 +233,27 @@ require("lazy").setup({
             },
           })
 
-          vim.keymap.set("n", "<Leader><Leader>b", ":FzfLua buffers<CR>", { noremap = true })
-          vim.keymap.set("n", "<Leader><Leader>c", ":FzfLua commands<CR>", { noremap = true })
-          vim.keymap.set("n", "<Leader><Leader>s", ":FzfLua files<CR>", { noremap = true })
+          vim.keymap.set("n", "<Leader>b", ":FzfLua buffers<CR>", { noremap = true })
+          vim.keymap.set("n", "<Leader>c", ":FzfLua commands<CR>", { noremap = true })
+          vim.keymap.set("n", "<Leader>s", ":FzfLua files<CR>", { noremap = true })
           vim.keymap.set("n", "q:", ":FzfLua command_history<CR>", { noremap = true })
+          vim.keymap.set("n", "Q:", ":FzfLua<CR>", { noremap = true })
         end,
       },
-      -- }}}
     },
+    -- }}}
+    -- gitsigns.nvim {{{
+    -- Git diff signs
     {
-      -- gruvbox-material {{{
-      -- Color themes
+      "lewis6991/gitsigns.nvim",
+      config = function()
+        require("gitsigns").setup()
+      end,
+    },
+    -- }}}
+    -- gruvbox-material {{{
+    -- Color themes
+    {
       "sainnhe/gruvbox-material",
       lazy = false,
       priority = 1000,
@@ -265,20 +268,20 @@ require("lazy").setup({
 
         vim.cmd.colorscheme("gruvbox-material")
       end,
-      -- }}}
     },
+    -- }}}
+    -- lualine.nvim {{{
+    -- Statusline/tabline
     {
-      -- lualine.nvim {{{
-      -- Statusline/tabline
       "nvim-lualine/lualine.nvim",
       dependencies = { "nvim-tree/nvim-web-devicons" },
       config = function()
         require("lualine").setup()
       end,
-      -- }}}
     },
+    -- }}}
+    -- mason {{{
     {
-      -- mason {{{
       "williamboman/mason.nvim",
       config = function()
         require("mason").setup({
@@ -287,10 +290,10 @@ require("lazy").setup({
           },
         })
       end,
-      -- }}}
     },
+    -- }}}
+    -- mason-lspconfig.nvim {{{
     {
-      -- mason-lspconfig.nvim {{{
       "williamboman/mason-lspconfig.nvim",
       config = function()
         require("mason-lspconfig").setup()
@@ -308,20 +311,20 @@ require("lazy").setup({
         --     end
         -- }
       end,
-      -- }}}
     },
+    -- }}}
+    -- nvim-autopairs {{{
     {
-      -- nvim-autopairs {{{
       "windwp/nvim-autopairs",
       event = "InsertEnter",
       config = true,
       -- use opts = {} for passing setup options
       -- this is equivalent to setup({}) function
-      -- }}}
     },
+    -- }}}
+    -- nvim-cmp {{{
+    -- A completion plugin
     {
-      -- nvim-cmp {{{
-      -- A completion plugin
       "hrsh7th/nvim-cmp",
       dependencies = {
         "hrsh7th/cmp-buffer",
@@ -373,26 +376,26 @@ require("lazy").setup({
           },
         })
       end,
-      -- }}}
     },
+    -- }}}
+    -- nvim-dap {{{
+    -- debugger
     {
-      -- nvim-dap {{{
-      -- debugger
       "mfussenegger/nvim-dap",
-      -- }}}
     },
+    -- }}}
+    -- nvim-dap-ui {{{
+    -- UI for nvim-dap
     {
-      -- nvim-dap-ui {{{
-      -- UI for nvim-dap
       "rcarriga/nvim-dap-ui",
       dependencies = {
         "mfussenegger/nvim-dap",
         "nvim-neotest/nvim-nio",
       },
-      --}}}
     },
+    --}}}
+    -- nvim-lint {{{
     {
-      -- nvim-lint {{{
       "mfussenegger/nvim-lint",
       config = function()
         require("lint").linters_by_ft = {
@@ -418,10 +421,10 @@ require("lazy").setup({
           end,
         })
       end,
-      -- }}}
     },
+    -- }}}
+    -- nvim-lspconfig {{{
     {
-      -- nvim-lspconfig {{{
       "neovim/nvim-lspconfig",
       config = function()
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -442,11 +445,11 @@ require("lazy").setup({
         lspconfig.texlab.setup({ capabilities = capabilities })
         lspconfig.jedi_language_server.setup({ capabilities = capabilities })
       end,
-      -- }}}
     },
+    -- }}}
+    -- nvim-tree {{{
+    -- File tree explorer
     {
-      -- nvim-tree {{{
-      -- File tree explorer
       "nvim-tree/nvim-tree.lua",
       init = function()
         vim.g.loaded_netrw = 1
@@ -461,23 +464,23 @@ require("lazy").setup({
           },
         })
 
-        vim.keymap.set("n", "<Leader><Leader>n", ":NvimTreeToggle | wincmd p<CR>", { noremap = true, silent = true })
+        vim.keymap.set("n", "<Leader>n", ":NvimTreeToggle | wincmd p<CR>", { noremap = true, silent = true })
       end,
-      -- }}}
     },
+    -- }}}
+    -- tagbar {{{
+    -- Dispalys tags
     {
-      -- tagbar {{{
-      -- Dispalys tags
       "preservim/tagbar",
       init = function()
         vim.g.tagbar_width = 40
-        vim.keymap.set("n", "<Leader><Leader>tb", ":TagbarToggle<CR>", { noremap = true })
+        vim.keymap.set("n", "<Leader>tb", ":TagbarToggle<CR>", { noremap = true })
       end,
-      -- }}}
     },
+    -- }}}
+    -- ultisnips {{{
+    -- Allows to write own snippets to spesific languages or commonly all
     {
-      -- ultisnips {{{
-      -- Allows to write own snippets to spesific languages or commonly all
       "SirVer/ultisnips",
       init = function()
         -- Trigger configuration. You need to change this to something other
@@ -495,11 +498,11 @@ require("lazy").setup({
         -- If you want :UltiSnipsEdit to split your window.
         -- vim.g.UltiSnipsEditSplit = "vertical"
       end,
-      -- }}}
     },
+    -- }}}
+    -- vimtex {{{
+    -- LaTeX
     {
-      -- vimtex {{{
-      -- LaTeX
       "lervag/vimtex",
       lazy = false, -- we don't want to lazy load VimTeX
       -- tag = "v2.15", -- uncomment to pin to a specific release
@@ -507,17 +510,8 @@ require("lazy").setup({
         -- VimTeX configuration goes here, e.g.
         vim.g.vimtex_view_method = "general"
       end,
-      -- }}}
     },
-    {
-      -- vim-gitgutter {{{
-      -- Git diff markers
-      "airblade/vim-gitgutter",
-      config = function()
-        vim.keymap.set("n", "<Leader><Leader>gg", ":GitGutterToggle<CR>", { noremap = true })
-      end,
-      -- }}}
-    },
+    -- }}}
   },
   -- Other settings {{{
   -- Configure any other settings here. See the documentation for more details.
@@ -541,6 +535,11 @@ require("lazy").setup({
 })
 -- }}}
 -- }}}
+
+vim.cmd([[
+syntax on
+filetype plugin indent on
+]])
 
 --
 -- My own notes
