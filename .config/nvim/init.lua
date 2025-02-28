@@ -73,7 +73,6 @@ vim.api.nvim_set_hl(0, "ColorColumn", { ctermbg = 0, guibg = lightgrey })
 vim.o.spell = false
 --vim.o.spelllang='en'
 -- }}}
-
 -- Mappings {{{
 vim.keymap.set("n", "<F1>", ":nohlsearch<CR>", { noremap = true })
 vim.keymap.set("i", "jk", "<Esc>", { noremap = true })
@@ -143,7 +142,6 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 -- }}}
-
 -- lazy.nvim {{{
 -- Setup lazy.nvim
 require("lazy").setup({
@@ -336,15 +334,15 @@ require("lazy").setup({
       },
       config = function()
         local cmp = require("cmp")
-        require("cmp").setup({
-          sources = {
-            { name = "buffer" },
-            { name = "nvim-lsp" },
-            { name = "nvim-lua" },
-            { name = "cmp-nvim-ultisnips" },
-            { name = "path" },
+        cmp.setup({
+          sources = cmp.config.sources({
+            { name = "nvim_lsp" },
+            { name = "ultisnips" },
+            { name = "nvim_lua" },
             { name = "vimtex" },
-          },
+            { name = "path" },
+            { name = "buffer" },
+          }),
           snippet = {
             -- REQUIRED - you must specify a snippet engine
             expand = function(args)
