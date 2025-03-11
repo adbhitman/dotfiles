@@ -1,7 +1,4 @@
---
--- COMMON
---
--- {{{
+-- COMMON {{{
 -- Common settings {{{
 vim.o.compatible = false
 vim.o.number = true
@@ -40,7 +37,18 @@ vim.opt.messagesopt = { "hit-enter", "history:1000" }
 
 vim.o.wildmenu = true
 vim.opt.wildmode = { "longest", "list" }
-vim.opt.wildignore = { "*.docx", "*.jpg", "*.png", "*.gif", "*.pdf", "*.pyc", "*.exe", "*.flv", "*.img", "*.xlsx" }
+vim.opt.wildignore = {
+  "*.docx",
+  "*.exe",
+  "*.flv",
+  "*.gif",
+  "*.img",
+  "*.jpg",
+  "*.pdf",
+  "*.png",
+  "*.pyc",
+  "*.xlsx",
+}
 
 vim.o.hidden = true
 vim.o.showcmd = true
@@ -120,10 +128,7 @@ vim.keymap.set({ "i" }, "<F8>", "<Esc>:w | lua ShowCodeOutput('python3')<CR>", {
 -- }}}
 -- }}}
 
---
--- PLUGINS
---
--- {{{
+-- PLUGINS {{{
 -- Bootstrap lazy.nvim {{{
 -- folke/lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -366,8 +371,8 @@ require("lazy").setup({
             end,
           }),
           window = {
-            completion = cmp.config.window.bordered(),
-            documentation = cmp.config.window.bordered(),
+            -- completion = cmp.config.window.bordered(),
+            -- documentation = cmp.config.window.bordered(),
           },
           view = {
             entries = "custom", -- can be "custom", "wildmenu" or "native"
@@ -404,13 +409,13 @@ require("lazy").setup({
         }
 
         vim.diagnostic.config({
-          virtual_text = false,
+          virtual_text = true,
           virtual_lines = false,
-          float = {
-            focusable = false, -- Whether the float window should be focusable
-            style = "minimal", -- Optionally set the float style (can be 'minimal' or 'normal')
-            border = "rounded", -- Optionally set a border style for the float
-          },
+          -- float = {
+          --   focusable = true, -- Whether the float window should be focusable
+          --   style = "minimal", -- Optionally set the float style (can be 'minimal' or 'normal')
+          --   -- border = "rounded", -- Optionally set a border style for the float
+          -- },
         })
 
         vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave", "BufWritePost" }, {
@@ -463,6 +468,23 @@ require("lazy").setup({
         })
 
         vim.keymap.set("n", "<Leader>n", ":NvimTreeToggle | wincmd p<CR>", { noremap = true, silent = true })
+      end,
+    },
+    -- }}}
+    -- nvim-treesitter {{{
+    -- advanced higlighting
+    {
+      "nvim-treesitter/nvim-treesitter",
+      build = ":TSUpdate",
+      config = function()
+        local configs = require("nvim-treesitter.configs")
+
+        configs.setup({
+          ensure_installed = {},
+          sync_install = false,
+          highlight = { enable = true },
+          indent = { enable = true },
+        })
       end,
     },
     -- }}}
