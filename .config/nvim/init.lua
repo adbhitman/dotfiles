@@ -82,10 +82,10 @@ vim.o.spell = false
 --vim.o.spelllang='en'
 -- }}}
 -- Mappings {{{
-vim.keymap.set("n", "<F1>", ":nohlsearch<CR>", { noremap = true })
 vim.keymap.set("i", "jk", "<Esc>", { noremap = true })
-vim.keymap.set("v", "<C-c>", "+y", { noremap = true })
+vim.keymap.set("v", "<C-c>", '"+y', { noremap = true })
 vim.keymap.set("n", "Q", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set('v', '<leader>y', '"+y', { noremap = true })
 
 vim.opt_local.mouse = "a"
 
@@ -191,6 +191,9 @@ require("lazy").setup({
           -- Use the "_" filetype to run formatters on filetypes that don't
           -- have other formatters configured.
           ["_"] = { "trim_whitespace" },
+          -- You can now set a custom `lsp_format` option inside the "_" wildcard
+          -- itself. For example:
+          -- ["_"] = { "trim_whitespace", lsp_format = "last" },
         },
         -- Set default options
         default_format_opts = {
@@ -447,6 +450,9 @@ require("lazy").setup({
         lspconfig.marksman.setup({ capabilities = capabilities })
         lspconfig.texlab.setup({ capabilities = capabilities })
         lspconfig.jedi_language_server.setup({ capabilities = capabilities })
+        lspconfig.html.setup({ capabilities = capabilities })
+        lspconfig.jsonls.setup({ capabilities = capabilities })
+        lspconfig.cssls.setup({ capabilities = capabilities })
       end,
     },
     -- }}}
@@ -467,7 +473,7 @@ require("lazy").setup({
           },
         })
 
-        vim.keymap.set("n", "<Leader>n", ":NvimTreeToggle | wincmd p<CR>", { noremap = true, silent = true })
+        vim.keymap.set("n", "<Leader>n", ":NvimTreeToggle<CR>:wincmd p<CR>", { noremap = true, silent = true })
       end,
     },
     -- }}}
@@ -480,11 +486,44 @@ require("lazy").setup({
         local configs = require("nvim-treesitter.configs")
 
         configs.setup({
-          ensure_installed = {},
           sync_install = false,
           highlight = { enable = true },
           indent = { enable = true },
         })
+      end,
+    },
+    -- }}}
+    -- peek.nvim {{{
+    -- markdown previewer
+    {
+      "toppair/peek.nvim",
+      event = { "VeryLazy" },
+      build = "deno task --quiet build:fast",
+      config = function()
+        require("peek").setup({
+          auto_load = true, -- whether to automatically load preview when
+          -- entering another markdown buffer
+          close_on_bdelete = true, -- close preview window on buffer delete
+
+          syntax = true, -- enable syntax highlighting, affects performance
+
+          theme = "dark", -- 'dark' or 'light'
+
+          update_on_change = true,
+
+          app = "browser", -- 'webview', 'browser', string or a table of strings
+          -- explained below
+
+          filetype = { "markdown" }, -- list of filetypes to recognize as markdown
+
+          -- relevant if update_on_change is true
+          throttle_at = 200000, -- start throttling when file exceeds this
+          -- amount of bytes in size
+          throttle_time = "auto", -- minimum amount of time in milliseconds
+          -- that has to pass before starting new render
+        })
+        vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+        vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
       end,
     },
     -- }}}
@@ -538,7 +577,7 @@ require("lazy").setup({
   -- colorscheme that will be used when installing plugins.
   install = {
     colorscheme = { "gruvbox-material" },
-    missing = false,
+    missing = true,
   },
   pkg = {
     -- the first package source that is found for a plugin will be used.
