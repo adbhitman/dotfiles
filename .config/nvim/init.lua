@@ -85,7 +85,7 @@ vim.o.spell = false
 vim.keymap.set("i", "jk", "<Esc>", { noremap = true })
 vim.keymap.set("v", "<C-c>", '"+y', { noremap = true })
 vim.keymap.set("n", "Q", "<Nop>", { noremap = true, silent = true })
-vim.keymap.set('v', '<leader>y', '"+y', { noremap = true })
+vim.keymap.set("v", "<leader>y", '"+y', { noremap = true })
 
 vim.opt_local.mouse = "a"
 
@@ -434,10 +434,9 @@ require("lazy").setup({
       "neovim/nvim-lspconfig",
       config = function()
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
-        local lspconfig = require("lspconfig")
 
-        lspconfig.bashls.setup({ capabilities = capabilities })
-        lspconfig.lua_ls.setup({
+        vim.lsp.config("bashls", { capabilities = capabilities })
+        vim.lsp.config("lua_ls", {
           capabilities = capabilities,
           settings = {
             Lua = {
@@ -447,12 +446,21 @@ require("lazy").setup({
             },
           },
         })
-        lspconfig.marksman.setup({ capabilities = capabilities })
-        lspconfig.texlab.setup({ capabilities = capabilities })
-        lspconfig.jedi_language_server.setup({ capabilities = capabilities })
-        lspconfig.html.setup({ capabilities = capabilities })
-        lspconfig.jsonls.setup({ capabilities = capabilities })
-        lspconfig.cssls.setup({ capabilities = capabilities })
+        vim.lsp.config("marksman", { capabilities = capabilities })
+        vim.lsp.config("texlab", { capabilities = capabilities })
+        vim.lsp.config("jedi_language_server", { capabilities = capabilities })
+        vim.lsp.config("html", { capabilities = capabilities })
+        vim.lsp.config("jsonls", { capabilities = capabilities })
+        vim.lsp.config("cssls", { capabilities = capabilities })
+
+        vim.lsp.enable("bashls")
+        vim.lsp.enable("lua_ls")
+        vim.lsp.enable("marksman")
+        vim.lsp.enable("texlab")
+        vim.lsp.enable("jedi_language_server")
+        vim.lsp.enable("html")
+        vim.lsp.enable("jsonls")
+        vim.lsp.enable("cssls")
       end,
     },
     -- }}}
