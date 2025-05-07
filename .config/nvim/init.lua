@@ -29,7 +29,7 @@ vim.opt.backspace = { "indent", "eol", "start" }
 vim.o.joinspaces = false
 
 vim.opt.omnifunc = "syntaxcomplete#Complete"
-vim.opt.completeopt = { "menuone", "preview", "popup", "fuzzy" }
+vim.opt.completeopt = { "menuone", "preview", "popup", "fuzzy", "noselect" }
 
 vim.o.history = 1000
 vim.opt.messagesopt = { "hit-enter", "history:1000" }
@@ -288,7 +288,7 @@ require("lazy").setup({
     -- }}}
     -- mason {{{
     {
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
       config = function()
         require("mason").setup({
           ui = {
@@ -300,22 +300,9 @@ require("lazy").setup({
     -- }}}
     -- mason-lspconfig.nvim {{{
     {
-      "williamboman/mason-lspconfig.nvim",
+      "mason-org/mason-lspconfig.nvim",
       config = function()
         require("mason-lspconfig").setup()
-        -- require("mason-lspconfig").setup_handlers {
-        --     -- The first entry (without a key) will be the default handler
-        --     -- and will be called for each installed server that doesn't have
-        --     -- a dedicated handler.
-        --     function (server_name) -- default handler (optional)
-        --         require("lspconfig")[server_name].setup {}
-        --     end,
-        --     -- Next, you can provide a dedicated handler for specific servers.
-        --     -- For example, a handler override for the `rust_analyzer`:
-        --     ["rust_analyzer"] = function ()
-        --         require("rust-tools").setup {}
-        --     end
-        -- }
       end,
     },
     -- }}}
@@ -412,8 +399,10 @@ require("lazy").setup({
         }
 
         vim.diagnostic.config({
-          virtual_text = true,
-          virtual_lines = false,
+          -- virtual_text = true,
+          -- virtual_lines = false,
+          virtual_text = { current_line = false },
+          virtual_lines = { current_line = true },
           -- float = {
           --   focusable = true, -- Whether the float window should be focusable
           --   style = "minimal", -- Optionally set the float style (can be 'minimal' or 'normal')
@@ -453,14 +442,16 @@ require("lazy").setup({
         vim.lsp.config("jsonls", { capabilities = capabilities })
         vim.lsp.config("cssls", { capabilities = capabilities })
 
-        vim.lsp.enable("bashls")
-        vim.lsp.enable("lua_ls")
-        vim.lsp.enable("marksman")
-        vim.lsp.enable("texlab")
-        vim.lsp.enable("jedi_language_server")
-        vim.lsp.enable("html")
-        vim.lsp.enable("jsonls")
-        vim.lsp.enable("cssls")
+        vim.lsp.enable({
+          "bashls",
+          "lua_ls",
+          "marksman",
+          "texlab",
+          "jedi_language_server",
+          "html",
+          "jsonls",
+          "cssls",
+        })
       end,
     },
     -- }}}
@@ -496,7 +487,7 @@ require("lazy").setup({
         configs.setup({
           sync_install = false,
           highlight = { enable = true },
-          indent = { enable = true },
+          indent = { enable = false },
         })
       end,
     },
