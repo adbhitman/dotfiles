@@ -399,10 +399,10 @@ require("lazy").setup({
         }
 
         vim.diagnostic.config({
-          -- virtual_text = true,
-          -- virtual_lines = false,
-          virtual_text = { current_line = false },
-          virtual_lines = { current_line = true },
+          virtual_text = true,
+          virtual_lines = false,
+          -- virtual_text = { current_line = false },
+          -- virtual_lines = { current_line = true },
           -- float = {
           --   focusable = true, -- Whether the float window should be focusable
           --   style = "minimal", -- Optionally set the float style (can be 'minimal' or 'normal')
@@ -425,6 +425,10 @@ require("lazy").setup({
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
         vim.lsp.config("bashls", { capabilities = capabilities })
+        vim.lsp.config("cssls", { capabilities = capabilities })
+        vim.lsp.config("html", { capabilities = capabilities })
+        vim.lsp.config("jedi_language_server", { capabilities = capabilities })
+        vim.lsp.config("jsonls", { capabilities = capabilities })
         vim.lsp.config("lua_ls", {
           capabilities = capabilities,
           settings = {
@@ -437,20 +441,18 @@ require("lazy").setup({
         })
         vim.lsp.config("marksman", { capabilities = capabilities })
         vim.lsp.config("texlab", { capabilities = capabilities })
-        vim.lsp.config("jedi_language_server", { capabilities = capabilities })
-        vim.lsp.config("html", { capabilities = capabilities })
-        vim.lsp.config("jsonls", { capabilities = capabilities })
-        vim.lsp.config("cssls", { capabilities = capabilities })
+        vim.lsp.config("vimls", { capabilities = capabilities })
 
         vim.lsp.enable({
           "bashls",
+          "cssls",
+          "html",
+          "jedi_language_server",
+          "jsonls",
           "lua_ls",
           "marksman",
           "texlab",
-          "jedi_language_server",
-          "html",
-          "jsonls",
-          "cssls",
+          "vimls",
         })
       end,
     },
@@ -481,10 +483,10 @@ require("lazy").setup({
     {
       "nvim-treesitter/nvim-treesitter",
       build = ":TSUpdate",
+      lazy = false,
+      branch = "main",
       config = function()
-        local configs = require("nvim-treesitter.configs")
-
-        configs.setup({
+        require("nvim-treesitter").setup({
           sync_install = false,
           highlight = { enable = true },
           indent = { enable = false },
