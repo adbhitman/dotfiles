@@ -633,31 +633,51 @@ filetype plugin indent on
 -- My own notes
 --
 -- {{{
--- Some LSP servers needed:
---   Install manually:
+-- {{{
+-- Use installing LSP-servers and others:
+--  - mason.nvim plugin: https://github.com/mason-org/mason.nvim
+--  - Or whatever other method you prefer
+--
+-- LSP-servers:
+--  texlab
 --   - https://github.com/latex-lsp/texlab
---   Listed in packages:
+--  vim-language-server
 --   - https://github.com/iamcco/vim-language-server
+--  bash-language-server
 --   - https://github.com/bash-lsp/bash-language-server
+--  marksman
 --   - https://github.com/artempyanykh/marksman
+--  vim-language-server
+--   - https://github.com/iamcco/vim-language-server
+--
 -- npm packages:
---   - bash-language-server
---   - htmlhint
---   - markdownlint-cli
---   - prettier
---   - vim-language-server
+--  htmlhint
+--   - https://github.com/htmlhint/HTMLHint
+--   markdownlint-cli
+--   - https://github.com/igorshubovych/markdownlint-cli
+--   prettier
+--   - https://github.com/prettier/prettier
+--
 -- pip packages
---   - autoimport
---   - bandit
---   - black
---   - isort
---   - mypy
---   - ruff
---   - vim-vint
--- Snap packages
---   - marksman
---   - shellcheck
---   - shfmt
--- Package manager
---   - universal-ctags
+--   bandit
+--   - https://github.com/PyCQA/bandit
+--   black
+--   - https://github.com/psf/black
+--   isort
+--   - https://github.com/PyCQA/isort
+--   mypy
+--   - https://github.com/python/mypy
+--   ruff
+--   - https://github.com/astral-sh/ruff
+--   vim-vint
+--   - https://github.com/Vimjas/vint
+--
+-- package manager:
+--   shellcheck
+--   - https://github.com/koalaman/shellcheck
+--   shfmt
+--   - https://github.com/mvdan/sh
+--   universal-ctags
+--   - https://github.com/universal-ctags/ctags
+-- }}}
 -- }}}
