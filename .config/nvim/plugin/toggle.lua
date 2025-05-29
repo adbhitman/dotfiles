@@ -1,5 +1,5 @@
 vim.cmd([[
-nnoremap <Localleader>f :call FoldColumnToggle()<cr>
+nnoremap <Localleader>F :call FoldColumnToggle()<cr>
 
 function! FoldColumnToggle()
     if &foldcolumn
