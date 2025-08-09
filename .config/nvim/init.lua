@@ -427,6 +427,10 @@ require("lazy").setup({
         vim.lsp.config("bashls", { capabilities = capabilities })
         vim.lsp.config("cssls", { capabilities = capabilities })
         vim.lsp.config("html", { capabilities = capabilities })
+        vim.lsp.config("hyprls", {
+          capabilities = capabilities,
+          root_dir = vim.fn.getcwd(),
+        })
         vim.lsp.config("jedi_language_server", { capabilities = capabilities })
         vim.lsp.config("jsonls", { capabilities = capabilities })
         vim.lsp.config("lua_ls", {
@@ -447,6 +451,7 @@ require("lazy").setup({
           "bashls",
           "cssls",
           "html",
+          "hyprls",
           "jedi_language_server",
           "jsonls",
           "lua_ls",
@@ -559,9 +564,7 @@ require("lazy").setup({
         "mikavilpas/yazi.nvim",
         event = "VeryLazy",
         dependencies = {
-          -- check the installation instructions at
-          -- https://github.com/folke/snacks.nvim
-          -- "folke/snacks.nvim",
+          { "nvim-lua/plenary.nvim", lazy = true },
         },
         keys = {
           -- 👇 in this section, choose your own keymappings!
@@ -593,8 +596,9 @@ require("lazy").setup({
         },
         -- 👇 if you use `open_for_directories=true`, this is recommended
         init = function()
+          -- mark netrw as loaded so it's not loaded at all.
+          --
           -- More details: https://github.com/mikavilpas/yazi.nvim/issues/802
-          -- vim.g.loaded_netrw = 1
           vim.g.loaded_netrwPlugin = 1
         end,
       },
