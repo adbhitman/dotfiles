@@ -459,6 +459,14 @@ require("lazy").setup({
           "texlab",
           "vimls",
         })
+
+        vim.api.nvim_create_autocmd("LspAttach", {
+          callback = function(args)
+            -- Unmap K
+            vim.keymap.del("n", "K", { buffer = args.buf })
+            vim.keymap.set("n", "KH", vim.lsp.buf.hover, { nnoremap = true })
+          end,
+        })
       end,
     },
     -- }}}
