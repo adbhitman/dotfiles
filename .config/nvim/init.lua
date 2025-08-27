@@ -464,7 +464,7 @@ require("lazy").setup({
           callback = function(args)
             -- Unmap K
             vim.keymap.del("n", "K", { buffer = args.buf })
-            vim.keymap.set("n", "KH", vim.lsp.buf.hover, { nnoremap = true })
+            vim.keymap.set("n", "KH", vim.lsp.buf.hover, { noremap = true })
           end,
         })
       end,
