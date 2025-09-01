@@ -1,4 +1,4 @@
--- Bootstrap lazy.nvim {{{
+-- Bootstrap lazy.nvim
 -- folke/lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -15,13 +15,9 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   end
 end
 vim.opt.rtp:prepend(lazypath)
--- }}}
 
--- Setup lazy.nvim
--- lazy.nvim {{{
 require("lazy").setup({
   spec = { import = "plugins" },
-  -- Other settings {{{
   -- Configure any other settings here. See the documentation for more details.
   -- colorscheme that will be used when installing plugins.
   install = {
@@ -39,6 +35,4 @@ require("lazy").setup({
   rocks = {
     enabled = false,
   },
-  -- }}}
 })
--- }}}
