@@ -12,7 +12,7 @@ return {
         capabilities = capabilities,
         root_dir = vim.fn.getcwd(),
       })
-      vim.lsp.config("jedi_language_server", { capabilities = capabilities })
+      -- vim.lsp.config("jedi_language_server", { capabilities = capabilities })
       vim.lsp.config("jsonls", { capabilities = capabilities })
       vim.lsp.config("lua_ls", {
         capabilities = capabilities,
@@ -48,22 +48,28 @@ return {
           })
         end,
         settings = {
-          Lua = {},
+          Lua = {
+            diagnostics = {
+              globals = { "vim" },
+            },
+          },
         },
       })
       vim.lsp.config("marksman", { capabilities = capabilities })
       vim.lsp.config("texlab", { capabilities = capabilities })
+      vim.lsp.config("zuban", { capabilities = capabilities })
 
       vim.lsp.enable({
         "bashls",
         "cssls",
         "html",
         "hyprls",
-        "jedi_language_server",
+        -- "jedi_language_server",
         "jsonls",
         "lua_ls",
         "marksman",
         "texlab",
+        "zuban",
       })
 
       vim.lsp.inline_completion.enable(true)
@@ -79,8 +85,16 @@ return {
 
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+          if client:supports_method("textDocument/foldingRange") then
+            local win = vim.api.nvim_get_current_win()
+            vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
+          end
+
           -- Unmap K
           vim.keymap.del("n", "K", { buffer = args.buf })
+          -- vim.keymap.del("n", "KK", { buffer = args.buf })
           vim.keymap.set("n", "KH", vim.lsp.buf.hover, { noremap = true })
         end,
       })

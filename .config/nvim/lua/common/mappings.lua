@@ -1,7 +1,7 @@
 vim.keymap.set("i", "jk", "<Esc>", { noremap = true })
 vim.keymap.set("v", "<C-c>", '"+y', { noremap = true })
 vim.keymap.set("n", "Q", "<Nop>", { noremap = true, silent = true })
-vim.keymap.set("v", "<leader>y", '"+y', { noremap = true })
+vim.keymap.set("v", "<Leader>y", '"+y', { noremap = true })
 
 vim.opt_local.mouse = "a"
 
@@ -41,3 +41,5 @@ end
 vim.keymap.set("n", "<Leader>tm", ToggleMouse, { noremap = true })
 vim.keymap.set({ "n" }, "<F8>", ":w | lua ShowCodeOutput('python3')<CR>", { noremap = true })
 vim.keymap.set({ "i" }, "<F8>", "<Esc>:w | lua ShowCodeOutput('python3')<CR>", { noremap = true })
+vim.keymap.set({ "n" }, "<Leader>pl", ":lcd %:p:h | pwd<CR>", { noremap = true })
+vim.keymap.set({ "n" }, "<Leader>R", ":restart<CR>", { noremap = true })

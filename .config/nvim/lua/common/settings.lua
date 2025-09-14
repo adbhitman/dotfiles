@@ -15,6 +15,10 @@ vim.g.maplocalleader = " "
 vim.o.autoread = true
 vim.o.splitright = true
 
+vim.o.foldlevel = 99
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+
 -- sets tabs to spaces
 vim.o.tabstop = 4 -- Size of TAB as spaces=true
 vim.o.softtabstop = 4 -- Sets the number of columns for a TAB=true
