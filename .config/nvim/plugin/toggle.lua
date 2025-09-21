@@ -25,3 +25,15 @@ function! QuickFixToggle()
     endif
 endfunction
 ]])
+
+function ToggleMouse()
+  local mouse_value = vim.o.mouse
+
+  if #mouse_value > 0 then
+    vim.o.mouse = ""
+  else
+    vim.o.mouse = "nvi"
+  end
+
+  print("New mouse value:", vim.inspect(vim.opt_local.mouse:get()))
+end

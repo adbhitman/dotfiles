@@ -94,7 +94,7 @@ return {
 
           -- Unmap K
           vim.keymap.del("n", "K", { buffer = args.buf })
-          -- vim.keymap.del("n", "KK", { buffer = args.buf })
+          vim.keymap.set("n", "KK", ShowHoverInNewBuffer, { noremap = true })
           vim.keymap.set("n", "KH", vim.lsp.buf.hover, { noremap = true })
         end,
       })
