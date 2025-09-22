@@ -3,6 +3,7 @@ function ShowOutput(opts)
   local output = opts.output or ""
   local filetype = opts.filetype or ""
   local compiler = opts.compiler or ""
+  local width = opts.width or ""
 
   local pattern = "__" .. vim.fn.bufname("%") .. "_output__"
   local windowNr = vim.fn.bufwinnr(pattern)
@@ -14,7 +15,7 @@ function ShowOutput(opts)
   if windowNr > 0 then
     vim.cmd("execute" .. windowNr .. " 'wincmd w'")
   else
-    vim.cmd("execute 'vsplit " .. pattern .. "'")
+    vim.cmd("execute '" .. width .. "vsplit " .. pattern .. "'")
   end
 
   vim.api.nvim_buf_set_lines(0, 0, -1, false, {})
@@ -33,7 +34,8 @@ function ShowOutput(opts)
 end
 
 -- Define a global function to show hover info in a new buffer
-function ShowHoverInNewBuffer()
+function ShowHoverInNewBuffer(width)
+  width = width or ""
   -- Create the parameters for the hover request
   local params = vim.lsp.util.make_position_params(0, "utf-8")
 
@@ -56,17 +58,6 @@ function ShowHoverInNewBuffer()
       hover_text = table.concat(hover_text, "\n")
     end
 
-    ShowOutput({ output = hover_text, filetype = "markdown" })
+    ShowOutput({ output = hover_text, filetype = "markdown", width = width })
   end)
 end
-
---[[
-nnoremap KH <plug>(YCMHover)
-nnoremap KK :vertical 85ShowDocWithSize<CR>
-
-command -count ShowDocWithSize
-  \ let g:ph=&previewheight
-  \ <bar> set previewheight=<count>
-  \ <bar> <mods> YcmCompleter GetDoc
-  \ <bar> let &previewheight=g:ph
-]]
