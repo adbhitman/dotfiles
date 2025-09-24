@@ -1,4 +1,4 @@
-vim/.vim/plugged
-vim/.vim/autoload
+.config/vim/plugged
+.config/vim/autoload
 
 .config/nvim/lazy-lock.json
