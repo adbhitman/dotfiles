@@ -8,3 +8,4 @@ vim.keymap.set({ "n" }, "<F8>", ":w | lua ShowOutput({compiler='python3'})<CR>",
 vim.keymap.set({ "i" }, "<F8>", "<Esc>:w | lua ShowCodeOutput({compiler='python3'})<CR>", { noremap = true })
 vim.keymap.set({ "n" }, "<Leader>pl", ":lcd %:p:h | pwd<CR>", { noremap = true })
 vim.keymap.set({ "n" }, "<Leader>R", ":restart<CR>", { noremap = true })
+vim.keymap.set({ "n" }, "<Leader>da", ":lua vim.diagnostic.setqflist()<CR>", { noremap = true })
