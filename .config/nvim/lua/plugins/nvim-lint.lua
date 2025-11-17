@@ -11,15 +11,8 @@ return {
       }
 
       vim.diagnostic.config({
-        virtual_text = true,
-        virtual_lines = false,
-        -- virtual_text = { current_line = false },
+        virtual_text = { current_line = true },
         -- virtual_lines = { current_line = true },
-        -- float = {
-        --   focusable = true, -- Whether the float window should be focusable
-        --   style = "minimal", -- Optionally set the float style (can be 'minimal' or 'normal')
-        --   -- border = "rounded", -- Optionally set a border style for the float
-        -- },
       })
 
       vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave", "BufWritePost" }, {
