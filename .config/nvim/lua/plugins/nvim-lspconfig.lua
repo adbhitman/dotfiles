@@ -8,9 +8,28 @@ return {
       vim.lsp.config("bashls", { capabilities = capabilities })
       vim.lsp.config("cssls", { capabilities = capabilities })
       vim.lsp.config("html", { capabilities = capabilities })
+
+      local bundles =
+        vim.fn.glob("$HOME/Documents/build/camel-language-server/target/camel-lsp-server-1.34.0*.jar", 1, 1)
+      vim.lsp.config("jdtls", {
+        capabilities = capabilities,
+        settings = {
+          java = {
+            -- Custom eclipse.jdt.ls options go here
+          },
+          init_options = { bundles = bundles },
+        },
+      })
       vim.lsp.config("hyprls", {
         capabilities = capabilities,
+        cmd = { "hyprls" },
         root_dir = vim.fn.getcwd(),
+        settings = {
+          hyprls = {
+            preferIgnoreFile = false,
+            ignore = { "hyprlock.conf", "hypridle.conf" },
+          },
+        },
       })
       -- vim.lsp.config("jedi_language_server", { capabilities = capabilities })
       vim.lsp.config("jsonls", { capabilities = capabilities })
@@ -64,6 +83,7 @@ return {
         "cssls",
         "html",
         "hyprls",
+        "jdtls",
         -- "jedi_language_server",
         "jsonls",
         "lua_ls",
@@ -93,7 +113,7 @@ return {
           end
 
           -- Unmap K
-          vim.keymap.del("n", "K", { buffer = args.buf })
+          pcall(vim.keymap.del, "n", "K", { buffer = args.buf })
           vim.keymap.set("n", "KK", function()
             ShowHoverInNewBuffer(90)
           end, { noremap = true })

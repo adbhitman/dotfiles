@@ -25,6 +25,7 @@ return {
         lua = { "stylua" },
         css = { "prettier" },
         html = { "prettier" },
+        java = { lsp_format = "prefer" },
         javascript = { "prettier" },
         json = { "prettier" },
         jsonc = { "prettier" },
