@@ -51,12 +51,19 @@ function ShowHoverInNewBuffer(width)
     end
 
     -- Extract the hover text from the result
-    local hover_text = result.contents.value
+    local contents = result.contents
 
-    hover_text = vim.lsp.util.convert_input_to_markdown_lines(hover_text)
-    if type(hover_text) == "table" then
-      hover_text = table.concat(hover_text, "\n")
+    if type(contents) == "string" then
+      contents = { contents }
+    elseif contents.kind and contents.value then
+      contents = { contents }
     end
+
+    local markdown_lines = vim.lsp.util.convert_input_to_markdown_lines(contents)
+
+    markdown_lines = vim.split(table.concat(markdown_lines, "\n"), "\n", { trimempty = true })
+
+    local hover_text = table.concat(markdown_lines, "\n")
 
     ShowOutput({ output = hover_text, filetype = "markdown", width = width })
   end)
