@@ -10,17 +10,20 @@ return {
       "quangnguyen30192/cmp-nvim-ultisnips",
       "hrsh7th/cmp-path",
       "micangl/cmp-vimtex",
+      "hrsh7th/cmp-nvim-lsp-signature-help",
     },
     config = function()
       local cmp = require("cmp")
+      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
       cmp.setup({
         sources = cmp.config.sources({
+          { name = "vimtex" },
           { name = "nvim_lsp" },
           { name = "ultisnips" },
           { name = "nvim_lua" },
-          { name = "vimtex" },
           { name = "path" },
-          { name = "buffer" },
+          { name = "nvim_lsp_signature_help" },
+          -- { name = "buffer" },
         }),
         snippet = {
           -- REQUIRED - you must specify a snippet engine
@@ -43,6 +46,8 @@ return {
               fallback()
             end
           end,
+          -- If you want insert `(` after select function or method item
+          cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done()),
         }),
         window = {
           -- completion = cmp.config.window.bordered(),
