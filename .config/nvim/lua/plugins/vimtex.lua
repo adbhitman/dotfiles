@@ -11,12 +11,12 @@ return {
 
       -- Here _ marks default compiler
       vim.g.vimtex_compiler_latexmk_engines = {
-        ["_"] = "-pdf",
+        ["pdf"] = "-pdf",
         ["pdfdvi"] = "-pdfdvi",
         ["pdfps"] = "-pdfps",
         ["pdflatex"] = "-pdf",
         ["luatex"] = "-lualatex",
-        ["lualatex"] = "-lualatex",
+        ["_"] = "-lualatex",
         ["xelatex"] = "-xelatex",
         ["context (pdftex)"] = "-pdf -pdflatex=texexec",
         ["context (luatex)"] = "-pdf -pdflatex=context",
