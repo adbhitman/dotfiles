@@ -31,7 +31,6 @@ return {
           },
         },
       })
-      -- vim.lsp.config("jedi_language_server", { capabilities = capabilities })
       vim.lsp.config("jsonls", { capabilities = capabilities })
       vim.lsp.config("lua_ls", {
         capabilities = capabilities,
@@ -84,7 +83,6 @@ return {
         "html",
         "hyprls",
         "jdtls",
-        -- "jedi_language_server",
         "jsonls",
         "lua_ls",
         "marksman",
