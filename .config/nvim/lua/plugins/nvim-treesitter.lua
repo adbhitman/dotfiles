@@ -8,25 +8,35 @@ return {
     config = function()
       require("nvim-treesitter").setup({})
 
+      -- Commented out are reminders what are installed default in neovim
+      local pattern = {
+        "bash",
+        -- "c",
+        "css",
+        "html",
+        "hurl",
+        "java",
+        "javadoc",
+        "jinja",
+        "jinja_inline",
+        "json",
+        "json5",
+        -- "lua",
+        -- "markdown",
+        -- "markdown_inline"
+        "python",
+        -- "query",
+        "regex",
+        "sql",
+        -- "vim",
+        -- "vimdoc",
+      }
+
+      require("nvim-treesitter").install(pattern)
+
       -- From treesitter manual
       vim.api.nvim_create_autocmd("FileType", {
-        pattern = {
-          "bash",
-          "css",
-          "html",
-          "hurl",
-          "java",
-          "javadoc",
-          "jinja",
-          "jinja_inline",
-          "json",
-          "json5",
-          "lua",
-          "markdown",
-          "python",
-          "regex",
-          "sql",
-        },
+        pattern = pattern,
 
         callback = function()
           -- syntax highlighting, provided by Neovim
