@@ -10,7 +10,7 @@ return {
       vim.lsp.config("html", { capabilities = capabilities })
 
       local bundles =
-        vim.fn.glob("$HOME/Documents/build/camel-language-server/target/camel-lsp-server-1.34.0*.jar", 1, 1)
+        vim.fn.glob(vim.env.HOME .. "/Documents/build/camel-language-server/target/camel-lsp-server-1.34.0*.jar", true, true)
       vim.lsp.config("jdtls", {
         capabilities = capabilities,
         settings = {
@@ -105,7 +105,7 @@ return {
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-          if client:supports_method("textDocument/foldingRange") then
+          if client and client:supports_method("textDocument/foldingRange") then
             local win = vim.api.nvim_get_current_win()
             vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
           end
