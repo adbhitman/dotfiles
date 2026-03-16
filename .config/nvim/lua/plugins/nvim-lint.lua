@@ -11,13 +11,22 @@ return {
       }
 
       vim.diagnostic.config({
-        -- virtual_text = { current_line = true },
-        -- virtual_lines = { current_line = true },
+        virtual_text = false,
+        virtual_lines = false,
       })
 
       vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave", "BufWritePost" }, {
         callback = function()
           require("lint").try_lint()
+        end,
+      })
+
+      vim.api.nvim_create_autocmd("CursorHold", {
+        callback = function()
+          local diag = vim.diagnostic.get(0, { lnum = vim.fn.line(".") - 1 })
+          if #diag > 0 then
+            vim.api.nvim_echo({ { diag[1].message } }, false, {})
+          end
         end,
       })
     end,
