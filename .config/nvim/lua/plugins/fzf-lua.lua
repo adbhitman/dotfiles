@@ -40,28 +40,29 @@ return {
       vim.keymap.set("n", "<Leader>r", ":FzfLua resume<CR>")
       vim.keymap.set("n", "<Leader>dd", ":FzfLua diagnostics_document<CR>")
       vim.keymap.set("n", "<Leader>dw", ":FzfLua diagnostics_workspace<CR>")
-      vim.keymap.set("n", "<Leader>ddl", ":FzfLua lsp_document_diagnostics<CR>")
-      vim.keymap.set("n", "<Leader>dwl", ":FzfLua lsp_workspace_diagnostics<CR>")
+      vim.keymap.set("n", "<Leader>dld", ":FzfLua lsp_document_diagnostics<CR>")
+      vim.keymap.set("n", "<Leader>dlw", ":FzfLua lsp_workspace_diagnostics<CR>")
+
+      function Fzf_cd(cmd_command)
+        cmd_command = cmd_command or ""
+        require("fzf-lua").fzf_exec(cmd_command, {
+          prompt = "cd> ",
+          actions = {
+            ["default"] = function(selected)
+              vim.cmd.lcd(selected[1])
+            end,
+          },
+        })
+      end
 
       vim.keymap.set("n", "<Leader>pp", function()
-        require("fzf-lua").fzf_exec("fd -t d --hidden . /mnt/omistaja/990PRO/ext4/MyFilesRoot/ $HOME", {
-          prompt = "cd> ",
-          actions = {
-            ["default"] = function(selected)
-              vim.cmd.lcd(selected[1])
-            end,
-          },
-        })
+        Fzf_cd("fd --type d --type l --hidden . $HOME")
       end)
       vim.keymap.set("n", "<Leader>pl", function()
-        require("fzf-lua").fzf_exec("fd -t d .", {
-          prompt = "cd> ",
-          actions = {
-            ["default"] = function(selected)
-              vim.cmd.lcd(selected[1])
-            end,
-          },
-        })
+        Fzf_cd("fd --type d --hidden .")
+      end)
+      vim.keymap.set("n", "<Leader>pg", function()
+        Fzf_cd("fd --type d --hidden . /")
       end)
     end,
   },
