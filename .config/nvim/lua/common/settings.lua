@@ -57,7 +57,8 @@ vim.o.showcmd = true
 vim.o.laststatus = 2
 
 vim.o.timeout = true
-vim.o.ttimeoutlen = 100
+vim.o.ttimeoutlen = 1000
+vim.opt.updatetime = 500
 --vim.o.ruler=true
 vim.o.scrolloff = 5
 
