@@ -4,15 +4,20 @@ return {
     "neovim/nvim-lspconfig",
     config = function()
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
+      -- local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-      vim.lsp.config("bashls", { capabilities = capabilities })
-      vim.lsp.config("cssls", { capabilities = capabilities })
-      vim.lsp.config("html", { capabilities = capabilities })
+      vim.lsp.config("*", { capabilities = capabilities })
 
-      local bundles =
-        vim.fn.glob(vim.env.HOME .. "/Documents/build/camel-language-server/target/camel-lsp-server-1.34.0*.jar", true, true)
+      vim.lsp.config("bashls", {})
+      vim.lsp.config("cssls", {})
+      vim.lsp.config("html", {})
+
+      local bundles = vim.fn.glob(
+        vim.env.HOME .. "/Documents/build/camel-language-server/target/camel-lsp-server-1.34.0*.jar",
+        true,
+        true
+      )
       vim.lsp.config("jdtls", {
-        capabilities = capabilities,
         settings = {
           java = {
             -- Custom eclipse.jdt.ls options go here
@@ -21,7 +26,6 @@ return {
         },
       })
       vim.lsp.config("hyprls", {
-        capabilities = capabilities,
         cmd = { "hyprls" },
         root_dir = vim.fn.getcwd(),
         settings = {
@@ -31,9 +35,8 @@ return {
           },
         },
       })
-      vim.lsp.config("jsonls", { capabilities = capabilities })
+      vim.lsp.config("jsonls", {})
       vim.lsp.config("lua_ls", {
-        capabilities = capabilities,
         on_init = function(client)
           if client.workspace_folders then
             local path = client.workspace_folders[1].name
@@ -73,9 +76,9 @@ return {
           },
         },
       })
-      vim.lsp.config("marksman", { capabilities = capabilities })
-      vim.lsp.config("texlab", { capabilities = capabilities })
-      vim.lsp.config("zuban", { capabilities = capabilities })
+      vim.lsp.config("marksman", {})
+      vim.lsp.config("texlab", {})
+      vim.lsp.config("zuban", {})
 
       vim.lsp.enable({
         "bashls",
