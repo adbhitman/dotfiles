@@ -75,10 +75,9 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
     end
 
     vim.wo.colorcolumn = "+1"
+    vim.api.nvim_set_hl(0, "ColorColumn", { fg = "Red", bg = '#470000' })
   end,
 })
-
-vim.api.nvim_set_hl(0, "ColorColumn", { ctermbg = 0, guibg = lightgrey })
 
 vim.o.spell = false
 --vim.o.spelllang='en'
