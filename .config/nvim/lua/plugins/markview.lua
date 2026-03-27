@@ -20,7 +20,7 @@ return {
 
       vim.api.nvim_set_keymap(
         "n",
-        "<leader>md",
+        "<leader>mv",
         "<CMD>Markview splitToggle<CR>",
         { desc = "Toggles `splitview` for current buffer." }
       )
