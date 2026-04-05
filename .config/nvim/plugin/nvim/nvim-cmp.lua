@@ -8,7 +8,6 @@ vim.pack.add({
   "https://github.com/hrsh7th/cmp-path",
   "https://github.com/micangl/cmp-vimtex",
   "https://github.com/hrsh7th/cmp-nvim-lsp-signature-help",
-  "https://github.com/windwp/nvim-autopairs",
   "https://github.com/hrsh7th/nvim-cmp",
 })
 
