@@ -33,7 +33,7 @@ vim.opt.omnifunc = "syntaxcomplete#Complete"
 vim.opt.completeopt = { "menuone", "preview", "popup", "fuzzy", "noselect" }
 
 vim.o.history = 1000
-vim.opt.messagesopt = { "hit-enter", "history:1000" }
+vim.opt.messagesopt = "hit-enter,history:1000,progress:c"
 --vim.o.autochdir=true
 
 vim.o.wildmenu = true
