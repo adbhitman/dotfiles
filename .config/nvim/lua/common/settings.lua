@@ -6,8 +6,8 @@ vim.o.incsearch = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.encoding = "utf-8"
---vim.o.fileformat=unix
---vim.o.fileencoding=utf-8
+--vim.o.fileformat="unix"
+--vim.o.fileencoding="utf-8"
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -26,30 +26,28 @@ vim.o.expandtab = true -- Expand TABs to spaces=true
 vim.o.autoindent = true -- Copy indent from current line when starting a new line.=true
 vim.o.smartindent = true
 
-vim.opt.backspace = { "indent", "eol", "start" }
+vim.opt.backspace = "indent,eol,start"
 vim.o.joinspaces = false
 
 vim.opt.omnifunc = "syntaxcomplete#Complete"
-vim.opt.completeopt = { "menuone", "preview", "popup", "fuzzy", "noselect" }
+vim.opt.completeopt = "menuone,preview,popup,fuzzy,noselect"
 
 vim.o.history = 1000
 vim.opt.messagesopt = "hit-enter,history:1000,progress:c"
 --vim.o.autochdir=true
 
 vim.o.wildmenu = true
-vim.opt.wildmode = { "longest", "list" }
-vim.opt.wildignore = {
-  "*.docx",
-  "*.exe",
-  "*.flv",
-  "*.gif",
-  "*.img",
-  "*.jpg",
-  "*.pdf",
-  "*.png",
-  "*.pyc",
-  "*.xlsx",
-}
+vim.opt.wildmode = "longest,list"
+vim.opt.wildignore = "*.docx,"
+  .. "*.exe,"
+  .. "*.flv,"
+  .. "*.gif,"
+  .. "*.img,"
+  .. "*.jpg,"
+  .. "*.pdf,"
+  .. "*.png,"
+  .. "*.pyc,"
+  .. "*.xlsx,"
 
 vim.o.hidden = true
 vim.o.showcmd = true
