@@ -1,8 +1,8 @@
 -- nvim-lspconfig
 vim.pack.add({ "https://github.com/neovim/nvim-lspconfig" })
 
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
--- local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- local capabilities = require("cmp_nvim_lsp").default_capabilities()
+local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 vim.lsp.config("*", { capabilities = capabilities })
 
@@ -114,5 +114,24 @@ vim.api.nvim_create_autocmd("LspAttach", {
       ShowHoverInNewBuffer(90)
     end, { noremap = true })
     vim.keymap.set("n", "KH", vim.lsp.buf.hover, { noremap = true })
+
+    -- lsp features
+    -- vim.lsp.inlay_hint.enable(),
+    vim.lsp.inline_completion.enable()
+    -- vim.lsp.linked_editing_range.enable(true, { client_id = client.id }),
+
+    -- vim.lsp.completion.enable(true, client.id, bufnr, {
+    --   autotrigger = true,
+    --   convert = function(item)
+    --     return { abbr = item.label:gsub("%b()", "") }
+    --   end,
+    -- }),
+    vim.lsp.completion.enable(true, client.id, bufnr, {
+      autotrigger = false,
+    })
   end,
 })
+
+vim.keymap.set("i", "<C-Space>", function()
+  vim.lsp.completion.get()
+end)
