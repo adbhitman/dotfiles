@@ -5,19 +5,19 @@ vim.pack.add({ "https://github.com/stevearc/conform.nvim" })
 require("conform").setup({
   -- Define your formatters
   formatters_by_ft = {
-    lua = { "stylua" },
+    bash = { "shfmt" },
     css = { "prettier" },
     html = { "prettier" },
     java = { lsp_format = "prefer" },
     javascript = { "prettier" },
     json = { "prettier" },
     jsonc = { "prettier" },
-    -- markdown = { "prettier" },
+    lua = { "stylua" },
     markdown = { "rumdl" },
     python = { "ruff" },
     sh = { "shfmt" },
-    bash = { "shfmt" },
     tex = { "latexindent" },
+    toml = { "tombi" },
 
     -- Use the "*" filetype to run formatters on all filetypes.
     -- ["*"] = { "codespell" },

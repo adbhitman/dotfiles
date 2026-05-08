@@ -73,6 +73,7 @@ vim.lsp.config("lua_ls", {
 })
 vim.lsp.config("marksman", {})
 vim.lsp.config("texlab", {})
+vim.lsp.config("tombi", {})
 vim.lsp.config("zuban", {})
 
 vim.lsp.enable({
@@ -85,6 +86,7 @@ vim.lsp.enable({
   "lua_ls",
   "marksman",
   "texlab",
+  "tombi",
   "zuban",
 })
 
