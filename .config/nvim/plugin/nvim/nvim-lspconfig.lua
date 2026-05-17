@@ -101,9 +101,10 @@ end, {
   desc = "Get the current inline completion",
 })
 
+-- Setup basic settings for autocompletion
 vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(args)
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
 
     if client and client:supports_method("textDocument/foldingRange") then
       local win = vim.api.nvim_get_current_win()
@@ -111,24 +112,18 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     -- Unmap K
-    pcall(vim.keymap.del, "n", "K", { buffer = args.buf })
+    pcall(vim.keymap.del, "n", "K", { buffer = ev.buf })
     vim.keymap.set("n", "KK", function()
       ShowHoverInNewBuffer(90)
     end, { noremap = true })
     vim.keymap.set("n", "KH", vim.lsp.buf.hover, { noremap = true })
 
     -- lsp features
-    -- vim.lsp.inlay_hint.enable(),
-    vim.lsp.inline_completion.enable()
+    -- vim.lsp.inline_completion.enable()
+    vim.lsp.inlay_hint.enable(false)
     -- vim.lsp.linked_editing_range.enable(true, { client_id = client.id }),
 
-    -- vim.lsp.completion.enable(true, client.id, bufnr, {
-    --   autotrigger = true,
-    --   convert = function(item)
-    --     return { abbr = item.label:gsub("%b()", "") }
-    --   end,
-    -- }),
-    vim.lsp.completion.enable(true, client.id, bufnr, {
+    vim.lsp.completion.enable(true, ev.data.client_id, ev.buf, {
       autotrigger = false,
     })
   end,
@@ -137,3 +132,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.keymap.set("i", "<C-Space>", function()
   vim.lsp.completion.get()
 end)
+vim.keymap.set("n", "<Space>gih", function()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), { desc = "Toggle lsp-feature inlay hints on/off." })
+end)
+vim.keymap.set("i", "<Cr>", function()
+  return vim.fn.pumvisible() == 1 and "<C-y>" or "<Cr>"
+end, { expr = true, desc = "Adds Enter key for accepting an element from the list." })
+vim.keymap.set("i", "<Tab>", function()
+  return vim.fn.pumvisible() == 1 and "<C-n>" or "<Tab>"
+end, { expr = true, desc = "Adds Tab to go a next element in the list." })
+vim.keymap.set("i", "<S-Tab>", function()
+  return vim.fn.pumvisible() == 1 and "<C-p>" or "<S-Tab>"
+end, { expr = true, desc = "Adds Shift+Tab to go a previous element in the list." })
