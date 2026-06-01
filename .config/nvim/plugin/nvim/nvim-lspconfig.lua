@@ -20,16 +20,6 @@ vim.lsp.config("jdtls", {
     init_options = { bundles = bundles },
   },
 })
-vim.lsp.config("hyprls", {
-  cmd = { "hyprls" },
-  root_dir = vim.fn.getcwd(),
-  settings = {
-    hyprls = {
-      preferIgnoreFile = false,
-      ignore = { "hyprlock.conf", "hypridle.conf" },
-    },
-  },
-})
 vim.lsp.config("jsonls", {})
 vim.lsp.config("lua_ls", {
   on_init = function(client)
@@ -80,7 +70,6 @@ vim.lsp.enable({
   "bashls",
   "cssls",
   "html",
-  "hyprls",
   "jdtls",
   "jsonls",
   "lua_ls",
