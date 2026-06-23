@@ -38,14 +38,15 @@ vim.opt.messagesopt = "hit-enter,history:1000,progress:c"
 
 vim.o.wildmenu = true
 vim.opt.wildmode = "longest,list"
-vim.opt.wildignore = "*.docx,"
+vim.opt.wildignore = ""
+  .. "*.docx,"
   .. "*.exe,"
   .. "*.flv,"
   .. "*.gif,"
   .. "*.img,"
   .. "*.jpg,"
   .. "*.pdf,"
-  .. "*.png,"
+  -- .. "*.png,"
   .. "*.pyc,"
   .. "*.xlsx,"
 
@@ -56,7 +57,7 @@ vim.o.laststatus = 2
 
 vim.o.timeout = true
 vim.o.ttimeoutlen = 1000
-vim.opt.updatetime = 500
+vim.o.updatetime = 500
 --vim.o.ruler=true
 vim.o.scrolloff = 5
 
