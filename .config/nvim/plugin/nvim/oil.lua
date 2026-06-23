@@ -26,7 +26,7 @@ require("oil").setup({
   },
   delete_to_trash = true,
   float = {
-    max_width = 0.5,
+    max_width = 0.7,
     max_height = 0.7,
     -- preview_split: Split direction: "auto", "left", "right", "above", "below".
     preview_split = "auto",
