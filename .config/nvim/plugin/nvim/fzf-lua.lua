@@ -12,15 +12,13 @@ require("fzf-lua").setup({
     },
   },
   fzf_opts = {
-    -- ["--layout"] = "reverse-list",
     -- nullify fzf-lua's settings to inherit from FZF_DEFAULT_OPTS
     ["--info"] = false,
-    ["--layout"] = false,
+    ["--layout"] = "default",
     ["--cycle"] = true,
+    ["--sort"] = true,
+    ["--tiebreak"] = "begin,length",
   },
-  -- complete_path = {
-  --   cmd = "fd --type d --hidden", -- default: auto detect fd|rg|find
-  -- },
 })
 
 vim.keymap.set("n", "<Leader>b", ":FzfLua buffers<CR>")
