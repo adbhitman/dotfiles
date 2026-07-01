@@ -35,11 +35,14 @@ require("conform").setup({
   -- Set up format-on-save
   -- format_on_save = { timeout_ms = 500 },
   -- Customize formatters
-  --   formatters = {
-  --     shfmt = {
-  --       prepend_args = { "-i", "2" },
-  --     },
-  --   },
+  formatters = {
+    latexindent = {
+      prepend_args = {
+        "--yaml",
+        "defaultIndent:'    '",
+      },
+    },
+  },
 })
 -- init = function()
 --   -- If you want the formatexpr, here is the place to set it
