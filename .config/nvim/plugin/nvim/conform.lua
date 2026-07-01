@@ -16,7 +16,7 @@ require("conform").setup({
     markdown = { "rumdl" },
     python = { "ruff" },
     sh = { "shfmt" },
-    tex = { "latexindent" },
+    tex = { "trim_whitespace", "latexindent" },
     toml = { "tombi" },
 
     -- Use the "*" filetype to run formatters on all filetypes.
