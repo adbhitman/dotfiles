@@ -55,7 +55,7 @@ vim.keymap.set("n", "<Leader>cddl", function()
 end)
 
 vim.keymap.set("n", "<Leader>cdf", function()
-  require("fzf-lua").files({ cwd = vim.env.HOME, follow = true })
+  require("fzf-lua").files({ cwd = vim.env.HOME, follow = false })
 end)
 vim.keymap.set("n", "<Leader>cdfg", function()
   require("fzf-lua").files({ cwd = "/" })
