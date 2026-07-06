@@ -32,7 +32,7 @@ vim.keymap.set("n", "<Leader>dw", ":FzfLua diagnostics_workspace<CR>")
 vim.keymap.set("n", "<Leader>dld", ":FzfLua lsp_document_diagnostics<CR>")
 vim.keymap.set("n", "<Leader>dlw", ":FzfLua lsp_workspace_diagnostics<CR>")
 
-function Fzf_cd(cmd_command)
+local function Fzf_cd(cmd_command)
   cmd_command = cmd_command or ""
   require("fzf-lua").fzf_exec(cmd_command, {
     prompt = "cd> ",
