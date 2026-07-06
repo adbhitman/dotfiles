@@ -8,8 +8,7 @@ vim.keymap.set({ "n" }, "<Leader>lcd", ":lcd %:p:h | pwd<CR>")
 vim.keymap.set({ "n" }, "<Leader>tcd", ":tcd %:p:h | pwd<CR>")
 vim.keymap.set({ "n" }, "<Leader>cd", ":cd %:p:h | pwd<CR>")
 
-local session_path = vim.env.HOME .. "/.local/state/nvim/tmp_sessions/Session.vim"
-vim.keymap.set({ "n" }, "<Leader>R", ":mksession! " .. session_path .. " | restart source " .. session_path .. "<CR>")
+vim.keymap.set({ "n" }, "<Leader>R", ":restart<CR>")
 
 vim.keymap.set({ "n" }, "<Leader>da", ":lua vim.diagnostic.setqflist()<CR>")
 vim.keymap.set("n", "<Leader>nc", function()
