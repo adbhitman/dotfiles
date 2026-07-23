@@ -16,7 +16,6 @@ require("fzf-lua").setup({
     ["--info"] = false,
     ["--layout"] = "default",
     ["--cycle"] = true,
-    ["--sort"] = true,
     ["--tiebreak"] = "begin,length",
   },
 })
@@ -45,13 +44,13 @@ local function Fzf_cd(cmd_command)
 end
 
 vim.keymap.set("n", "<Leader>cdd", function()
-  Fzf_cd("fd --type d --type l --hidden . $HOME")
+  Fzf_cd("fd --type d --type l --hidden . $HOME --exclude .git")
 end)
 vim.keymap.set("n", "<Leader>cddg", function()
-  Fzf_cd("fd --type d --hidden . /")
+  Fzf_cd("fd --type d --hidden . / --exclude .git")
 end)
 vim.keymap.set("n", "<Leader>cddl", function()
-  Fzf_cd("fd --type d --hidden .")
+  Fzf_cd("fd --type d --hidden . --exclude .git")
 end)
 
 vim.keymap.set("n", "<Leader>cdf", function()
