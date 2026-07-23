@@ -120,10 +120,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 vim.keymap.set("i", "<C-Space>", function()
   vim.lsp.completion.get()
-end)
+end, { desc = "Adds Ctrl + Space key to trigger autocompletion." })
 vim.keymap.set("n", "<Space>gih", function()
-  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), { desc = "Toggle lsp-feature inlay hints on/off." })
-end)
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end, { desc = "Toggle lsp-feature inlay hints on/off." })
 vim.keymap.set("i", "<Cr>", function()
   return vim.fn.pumvisible() == 1 and "<C-y>" or "<Cr>"
 end, { expr = true, desc = "Adds Enter key for accepting an element from the list." })
