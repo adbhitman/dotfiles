@@ -8,8 +8,6 @@ vim.keymap.set({ "n" }, "<Leader>lcd", ":lcd %:p:h | pwd<CR>")
 vim.keymap.set({ "n" }, "<Leader>tcd", ":tcd %:p:h | pwd<CR>")
 vim.keymap.set({ "n" }, "<Leader>cd", ":cd %:p:h | pwd<CR>")
 
-vim.keymap.set({ "n" }, "<Leader>R", ":restart<CR>")
-
 vim.keymap.set({ "n" }, "<Leader>da", ":lua vim.diagnostic.setqflist()<CR>")
 vim.keymap.set("n", "<Leader>nc", function()
   vim.cmd.edit(vim.fn.expand(vim.env.HOME .. "/.config/nvim/init.lua"))
