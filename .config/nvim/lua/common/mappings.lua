@@ -1,6 +1,5 @@
 vim.keymap.set("i", "jk", "<Esc>")
 vim.keymap.set("v", "<C-c>", '"+y')
-vim.keymap.set("n", "Q", "<Nop>")
 
 vim.keymap.set({ "n" }, "<F8>", ":w | lua ShowOutput({compiler='python3'})<CR>")
 vim.keymap.set({ "i" }, "<F8>", "<Esc>:w | lua ShowCodeOutput({compiler='python3'})<CR>")
