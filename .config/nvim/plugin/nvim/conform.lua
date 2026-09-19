@@ -14,8 +14,9 @@ require("conform").setup({
     jsonc = { "prettier" },
     lua = { "stylua" },
     markdown = { "rumdl" },
-    python = { "ruff" },
+    python = { "ruff_format" },
     sh = { "shfmt" },
+    sql = { "sqlfluff" },
     tex = { "trim_whitespace", "latexindent" },
     toml = { "tombi" },
 

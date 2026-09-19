@@ -6,6 +6,7 @@ require("lint").linters_by_ft = {
   markdown = { "rumdl" },
   python = { "ruff" },
   sh = { "shellcheck" },
+  sql = { "sqlfluff" },
 }
 
 vim.diagnostic.config({
